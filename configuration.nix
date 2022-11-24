@@ -10,12 +10,18 @@
       ./hardware-configuration.nix
     ];
 
+  # ------------------------------------------------
+  # Stuff added by Alex:
   programs.fish.enable = true;
+  documentation.man.generateCaches = false; # enabled by programs.fish >:(
 
   nix.settings = {
     auto-optimise-store = true;
     experimental-features = [ "ca-derivations" "flakes" "nix-command" "repl-flake" ];
   };
+
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # ------------------------------------------------
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
