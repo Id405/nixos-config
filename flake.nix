@@ -1,5 +1,5 @@
 {
-  description = "Your new nix config";
+  description = "Lily's Scrumptious NixOs Config";
 
   inputs = {
     # Nixpkgs
@@ -9,8 +9,10 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # TODO: Add any other flake you might need
     hardware.url = "github:nixos/nixos-hardware";
+    
+    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.inputs.nixpkgs.follows = "nixpkgs";
 
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
@@ -19,21 +21,19 @@
 
   outputs = { nixpkgs, home-manager, ... }@inputs: {
     nixosConfigurations = {
-      # FIXME replace with your hostname
-      your-hostname = nixpkgs.lib.nixosSystem {
+      scrumptious = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; }; # Pass flake inputs to our config
-        # > Our main nixos configuration file <
         modules = [ ./nixos/configuration.nix ];
       };
     };
 
     homeConfigurations = {
-      # FIXME replace with your username@hostname
-      "your-username@your-hostname" = home-manager.lib.homeManagerConfiguration {
+      "lily@scrumptious" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = { inherit inputs; }; # Pass flake inputs to our config
-        # > Our main home-manager configuration file <
-        modules = [ ./home-manager/home.nix ];
+        modules = [
+            ./home-manager/home.nix
+        ];
       };
     };
   };
