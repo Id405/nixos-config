@@ -1,8 +1,4 @@
-# This is your system's configuration file.
-# Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-
 { inputs, lib, config, pkgs, ... }: {
-  # You can import other NixOS modules here
   imports = [
     # If you want to use modules from other flakes (such as nixos-hardware):
     # inputs.hardware.nixosModules.common-cpu-amd
@@ -28,13 +24,13 @@
       #   });
       # })
     ];
-    # Configure your nixpkgs instance
+    
     config = {
-      # Disable if you don't want unfree packages
       allowUnfree = true;
     };
   };
 
+  # nix wizardry <]:) <-- a little guy with a wizard hat
   nix = {
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
@@ -44,48 +40,53 @@
     # Making legacy nix commands consistent as well, awesome!
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
+    # Enable the good shit
     settings = {
-      # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
-      # Deduplicate and optimize nix store
       auto-optimise-store = true;
     };
   };
 
-  # FIXME: Add the rest of your current configuration
+  # Internationalization stuff (#) <--- maybe it is sitelen pona ma?
+  time.timeZone = "America/Los_Angeles"
+  i18n.defaultLocale = "en_US.utf8"
+  console.keyMap = "colemak";
 
-  # TODO: Set your hostname
-  networking.hostName = "your-hostname";
+  # Printing stuff [#] <--- idk like a document or some shit
+  services.printing.enable = true;
 
-  # TODO: This is just an example, be sure to use whatever bootloader you prefer
+  # Sound 0^0 <--- its like a headphones or maybe an owl face
+  sound.enable = true;
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+  }
+
+  # Networking :/
+  networking.hostName = "scrumptious";
+  networking.networkmanager.enable = true;
+
+  # Bootloader and kernel :0
   boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
+  # Users \O/ \O/ \O/ <--- imagine these as lots of people
   users.users = {
-    # FIXME: Replace with your username
-    your-username = {
-      # TODO: You can set an initial password for your user.
-      # If you do, you can skip setting a root password by passing '--no-root-passwd' to nixos-install.
-      # Be sure to change it (using passwd) after rebooting!
-      initialPassword = "correcthorsebatterystaple";
+    lily = {
       isNormalUser = true;
-      openssh.authorizedKeys.keys = [
-        # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
-      ];
-      # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
-      extraGroups = [ "wheel" ];
+      extraGroups = [ "networkmanager" "wheel" ];
     };
   };
 
-  # This sets up a SSH server. Very important if you're setting up a headless system.
-  # Feel free to remove if you don't need it.
-  services.openssh = {
-    enable = true;
-    # Forbid root login through SSH.
-    permitRootLogin = "no";
-    # Use keys only. Remove if you want to SSH using password (not recommended)
-    passwordAuthentication = false;
-  };
+  # Automatic login :DDDDD
+  services.getty.autologinUser = "lily"
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.05";
