@@ -47,28 +47,31 @@
     };
   };
 
+  # We need git for nix-rebuild to work
+  programs.git.enable = true;
+
   # Internationalization stuff (#) <--- maybe it is sitelen pona ma?
-  time.timeZone = "America/Los_Angeles"
-  i18n.defaultLocale = "en_US.utf8"
+  time.timeZone = "America/Los_Angeles";
+  i18n.defaultLocale = "en_US.utf8";
   console.keyMap = "colemak";
 
   # Printing stuff [#] <--- idk like a document or some shit
   services.printing.enable = true;
 
   # Sound 0^0 <--- its like a headphones or maybe an owl face
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-  }
+  # sound.enable = true;
+  # hardware.pulseaudio.enable = false;
+  # security.rtkit.enable = true;
+  # services.pipewire = {
+  #     enable = true;
+  #     alsa.enable = true;
+  #     alsa.support32Bit = true;
+  #     pulse.enable = true;
+  #     jack.enable = true;
+  # };
 
   # Networking :/
-  networking.hostName = "scrumptious";
+  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
   # Bootloader and kernel :0
@@ -86,7 +89,7 @@
   };
 
   # Automatic login :DDDDD
-  services.getty.autologinUser = "lily"
+  services.getty.autologinUser = "lily";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.05";
