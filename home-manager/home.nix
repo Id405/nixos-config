@@ -1,4 +1,35 @@
-{ inputs, lib, config, pkgs, ... }: {
+{ inputs, lib, config, pkgs, ... }:
+let
+    inherit (inputs.nix-colors) colorSchemes;
+    inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme nixWallpaperFromScheme;
+    summercamp-desaturated = {
+	name = "Summercamp Desaturated";
+	slug = "summercamp-desaturated";
+	author = "zoe firi (modified by Id405";
+	colors = {
+    	  base00 = "1c1c1c";
+    	  base01 = "282828";
+    	  base02 = "3a3a3a";
+    	  base03 = "4f4f4f";
+    	  base04 = "5e5e5e";
+    	  base05 = "727272";
+    	  base06 = "bababa";
+    	  base07 = "f7f7f7";
+    	  base08 = "e35142";
+    	  base09 = "fba11b";
+    	  base0A = "f2ff27";
+    	  base0B = "5ceb5a";
+    	  base0C = "5aebbc";
+    	  base0D = "489bf0";
+    	  base0E = "FF8080";
+    	  base0F = "F69BE7";
+	};
+    };
+    fontSize = 13;
+    fontSizeSmall = 12;
+    terminalEmulator = "kitty";
+in
+{
   imports = [
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     inputs.nix-colors.homeManagerModule
@@ -46,7 +77,6 @@
   # Add stuff for your user as you see fit:
   # programs.neovim.enable = true;
   # home.packages = with pkgs; [ steam ];
-  programs.kakoune.enable = true;
   programs.home-manager.enable = true;
   programs.git.enable = true;
   home.packages = with pkgs; [
@@ -65,40 +95,24 @@
 	# Programs
 	firefox
 	cinnamon.nemo
+	slurp
+	grim
+	sway-contrib.grimshot
+	zathura
+	libreoffice
+	swaybg
   ];
 
   # Color scheme
-  colorScheme = {
-	name = "Summercamp Desaturated";
-	slug = "summercamp-desaturated";
-	author = "zoe firi (modified by Id405";
-	colors = {
-    	  base00 = "1c1c1c";
-    	  base01 = "282828";
-    	  base02 = "3a3a3a";
-    	  base03 = "4f4f4f";
-    	  base04 = "5e5e5e";
-    	  base05 = "727272";
-    	  base06 = "bababa";
-    	  base07 = "f7f7f7";
-    	  base08 = "e35142";
-    	  base09 = "fba11b";
-    	  base0A = "f2ff27";
-    	  base0B = "5ceb5a";
-    	  base0C = "5aebbc";
-    	  base0D = "489bf0";
-    	  base0E = "FF8080";
-    	  base0F = "F69BE7";
-	};
-  };
-
+  colorScheme = summercamp-desaturated;
   # Hyprland
   wayland.windowManager.hyprland = {
       enable = true;
       extraConfig = ''
       # Programs
-      bind=SUPER,Return,exec,alacritty
-      bind=SUPER,Space,exec,rofi -show run -show-icons -icon-theme yaru
+      bind=SUPER,Return,exec,${terminalEmulator}
+      bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
+      bind=SUPER,b,exec,grimshot copy area
 
       # Wm controls
       bind=SUPER,c,killactive
@@ -121,15 +135,27 @@
       # status bar
       exec-once="waybar"
 
+      # wallpaper
+      exec-once=swaybg --color "##${config.colorScheme.colors.base00}"
+
       # animations
       animation=global,1,2,default
 
       general {
-          border_size = 0
+          border_size = 2
+          col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
+          col.active_border = rgba(${config.colorscheme.colors.base08}ff)
+          gaps_in = 12
+          gaps_out = 12
+          cursor_inactive_timeout = 30
       }
       
       misc {
           disable_hyprland_logo = true
+      }
+
+      decoration {
+	rounding = 12;
       }
 
       input {
@@ -163,6 +189,7 @@
     	  border: none;
     	  border-radius: 0;
     	  font-family: Inter;
+    	  font-size: ${toString fontSizeSmall}pt;
     	  background-color: #${config.colorScheme.colors.base00};
     	  color: #fff;
 	}
@@ -181,7 +208,7 @@
               background-color = mkLiteral "#${config.colorScheme.colors.base00}";
               foreground-color = mkLiteral "#${config.colorScheme.colors.base07}";
               text-color = mkLiteral "#${config.colorScheme.colors.base07}";
-              font = "Inter 14";
+              font = "Inter ${toString fontSize}";
               border-radius = mkLiteral "0.25em";
           };
 
@@ -218,23 +245,45 @@
   # Fonts
   fonts.fontconfig.enable = true;
 
-  # Alacritty
-  programs.alacritty = {
+  # Kitty
+  programs.kitty = {
       enable = true;
-      settings.font = {
-        size = 14;
-	normal = {
-    		family = "Fira Code";
-    		style = "Regular";
-	};
-	bold = {
-    		family = "Fira Code";
-    		style = "Bold";
-	};
-	italic = {
-    		family = "Fira Code";
-    		style = "Italic";
-	};
+      font = {
+          name = "Fira Code";
+          size = fontSize;
+      };
+
+      settings = {
+        confirm_os_window_close = 0;
+        window_padding_width = 12;
+	foreground = "#${config.colorScheme.colors.base05}";
+	background = "#${config.colorScheme.colors.base00}";
+	selection_background = "#${config.colorScheme.colors.base08}";
+	selection_foreground = "#${config.colorScheme.colors.base00}";
+	url_color = "#${config.colorScheme.colors.base0D}";
+	cursor = "#${config.colorScheme.colors.base07}";
+	color0 = "#${config.colorScheme.colors.base00}";
+        color1 = "#${config.colorScheme.colors.base08}";
+        color2 = "#${config.colorScheme.colors.base0B}";
+        color3 = "#${config.colorScheme.colors.base0A}";
+        color4 = "#${config.colorScheme.colors.base0D}";
+        color5 = "#${config.colorScheme.colors.base0E}";
+        color6 = "#${config.colorScheme.colors.base0C}";
+        color7 = "#${config.colorScheme.colors.base05}";
+        color8 = "#${config.colorScheme.colors.base03}";
+        color9 = "#${config.colorScheme.colors.base08}";
+        color10 = "#${config.colorScheme.colors.base0B}";
+        color11 = "#${config.colorScheme.colors.base0A}";
+        color12 = "#${config.colorScheme.colors.base0D}";
+        color13 = "#${config.colorScheme.colors.base0E}";
+        color14 = "#${config.colorScheme.colors.base0C}";
+        color15 = "#${config.colorScheme.colors.base07}";
+        color16 = "#${config.colorScheme.colors.base09}";
+        color17 = "#${config.colorScheme.colors.base0F}";
+        color18 = "#${config.colorScheme.colors.base01}";
+        color19 = "#${config.colorScheme.colors.base02}";
+        color20 = "#${config.colorScheme.colors.base04}";
+        color21 = "#${config.colorScheme.colors.base06}";
       };
   };
 
@@ -243,7 +292,7 @@
       enable = true;
       font = {
           name = "Inter";
-          size = 14;
+          size = fontSize;
       };
       iconTheme = {
           package = pkgs.yaru-theme;
@@ -251,10 +300,10 @@
       };
   };
 
-  # Gtk
-  gtk.theme = let lib-contrib = inputs.nix-colors.lib-contrib {inherit pkgs; }; in {
+  # Gtk theme
+  gtk.theme = {
       name = "${config.colorScheme.slug}";
-      package = lib-contrib.gtkThemeFromScheme {
+      package = gtkThemeFromScheme {
           scheme = config.colorScheme;
       };
   };
@@ -267,6 +316,16 @@
       enableFishIntegration = true;
   };
 
+  # Kakoune (TODO fix colorscheme to use same as desktop)
+  programs.kakoune = {
+      enable = true;
+      config = {
+          colorScheme = "default";
+          ui.assistant = "none";
+          ui.enableMouse = true;
+      };
+  };
+
   # Fish  
   programs.fish = {
       enable = true;
@@ -275,10 +334,19 @@
 	  exec Hyprland &> /dev/null
 	end
       '';
+      interactiveShellInit = ''
+        set fish_greeting
+      '';
       functions = {
 	hoed = "eval $EDITOR /etc/nixos/home-manager/home.nix; and env -C /etc/nixos/ /etc/nixos/build.sh";
 	sysed = "eval $EDITOR /etc/nixos/nixos/configuration.nix; and env -C /etc/nixos /etc/nixos/build.sh";
       };
+  };
+
+  # btop
+  programs.btop = {
+      enable = true;
+      settings.color_theme = "TTY";
   };
 
   # Nicely reload system units when changing configs
