@@ -343,6 +343,9 @@ in
           userChrome = import ./firefox/userChrome.nix {
              colors=config.colorScheme.colors;
       	  };
+      	  userContent = import ./firefox/userContent.nix {
+             colors=config.colorScheme.colors;
+      	  };
       	  settings = {
 	     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
       	  };
