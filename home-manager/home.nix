@@ -322,7 +322,7 @@ in
   # Firefox
   programs.firefox = {
       enable = true;
-  }
+  };
 
   # Vscode
   programs.vscode = {
