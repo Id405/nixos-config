@@ -22,7 +22,9 @@ by Miguel Avila
 
 :root {
   --sfwindow: #${colors.base00};
-  --sfsecondary: #${colors.base01};
+  --sfsecondary: #${colors.base00};
+
+  ;
 }
 
 /* Urlbar View */

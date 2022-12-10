@@ -339,8 +339,13 @@ in
   # Firefox
   programs.firefox = {
       enable = true;
-      profiles."default".userChrome = import ./firefox/userChrome.nix {
-          colors=config.colorScheme.colors;
+      profiles."default" = {
+          userChrome = import ./firefox/userChrome.nix {
+             colors=config.colorScheme.colors;
+      	  };
+      	  settings = {
+	     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+      	  };
       };
   };
 
@@ -374,6 +379,13 @@ in
           colorScheme = "default";
           ui.assistant = "none";
           ui.enableMouse = true;
+          hooks = [
+              {
+                 commands = "kakboard-enable";
+                 name = "WinCreate";
+                 option = ".*";
+              }
+          ];
       };
       plugins = with pkgs; [ kakounePlugins.kakboard ];
   };
