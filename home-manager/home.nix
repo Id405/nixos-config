@@ -25,8 +25,8 @@ let
     	  base0F = "F69BE7";
 	};
     };
-    fontSize = 13;
-    fontSizeSmall = 12;
+    fontSize = 10;
+    fontSizeSmall = 9;
     terminalEmulator = "kitty";
 in
 {
@@ -55,6 +55,10 @@ in
           waybar = prev.waybar.overrideAttrs (oldAttrs: {
               mesonFlags = oldAttrs.mesonFlags ++ ["-Dexperimental=true"];
           });
+      })
+
+      (self: super: {
+                discord = super.discord.override { withOpenASAR = true; };
       })
     ];
     # Configure your nixpkgs instance
@@ -91,6 +95,9 @@ in
 	mplus-outline-fonts.githubRelease
 	nerdfonts
 	inter
+
+	# Daemons
+	wl-clipboard
 	
 	# Programs
 	cinnamon.nemo
@@ -159,6 +166,11 @@ in
 
       decoration {
 	rounding = 12;
+      }
+
+      gestures {
+	workspace_swipe = true;
+	workspace_swipe_invert = false;
       }
 
       input {
@@ -245,6 +257,11 @@ in
       };
   };
 
+  # mako
+  programs.mako = {
+      enable = true;
+  };
+
   # Fonts
   fonts.fontconfig.enable = true;
 
@@ -322,6 +339,23 @@ in
   # Firefox
   programs.firefox = {
       enable = true;
+      profiles."default".userChrome = import ./firefox/userChrome.nix {
+          colors=config.colorScheme.colors;
+      };
+  };
+
+  # Discocss
+  programs.discocss = {
+      enable = true;
+      css = ''
+	.theme-dark {
+    	  --saturation-factor: 0;
+    	  --background-primary: ${config.colorScheme.colors.base00};
+    	  --background-primary-alt: ${config.colorScheme.colors.base01};
+    	  --background-secondary: ${config.colorScheme.colors.base00};
+    	  --background-secondary-alt: ${config.colorScheme.colors.base01};
+	}
+      '';
   };
 
   # Vscode
@@ -341,6 +375,7 @@ in
           ui.assistant = "none";
           ui.enableMouse = true;
       };
+      plugins = with pkgs; [ kakounePlugins.kakboard ];
   };
 
   # Fish  
