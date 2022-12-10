@@ -93,7 +93,6 @@ in
 	inter
 	
 	# Programs
-	firefox
 	cinnamon.nemo
 	slurp
 	grim
@@ -101,6 +100,7 @@ in
 	zathura
 	libreoffice
 	swaybg
+	texlive.combined.scheme-full
   ];
 
   # Color scheme
@@ -109,6 +109,9 @@ in
   wayland.windowManager.hyprland = {
       enable = true;
       extraConfig = ''
+      # Monitors
+      monitor=eDP-1,2256x1504@60,0x0,1.3
+      
       # Programs
       bind=SUPER,Return,exec,${terminalEmulator}
       bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
@@ -314,6 +317,20 @@ in
   programs.nix-index = {
       enable = true;
       enableFishIntegration = true;
+  };
+
+  # Firefox
+  programs.firefox = {
+      enable = true;
+  }
+
+  # Vscode
+  programs.vscode = {
+      enable = true;
+      extensions = [ pkgs.vscode-extensions.james-yu.latex-workshop ];
+      userSettings = {
+          "keyboard.dispatch" = "keyCode";
+      };
   };
 
   # Kakoune (TODO fix colorscheme to use same as desktop)
