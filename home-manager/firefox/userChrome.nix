@@ -1,19 +1,21 @@
 { colors, fontSize, fontSizeSmall }:
 ''
- :root {
+ /* This is a modified version of minimal-functional-fox
+ https://github.com/mut-ex/minimal-functional-fox */
 
+ :root {
    /* Minimal Functional Fox variables*/
   --mff-bg: #${colors.base00};
   --mff-icon-color: #${colors.base07};
-  --mff-nav-toolbar-padding: 8px;
+  --mff-nav-toolbar-padding: 0px;
   --mff-sidebar-bg: var(--mff-bg);
   --mff-sidebar-color: #${colors.base07};
   --mff-tab-border-radius: 0px;
-  --mff-tab-color: #${colors.base00};
+  --mff-tab-color: #${colors.base07};
   --mff-tab-font-family: "Inter", sans;
   --mff-tab-font-size: ${toString fontSizeSmall}pt;
   --mff-tab-font-weight: 400;
-  --mff-tab-height: 32px;
+  --mff-tab-height: 1.5em;
   --mff-tab-pinned-bg: #${colors.base00};
   --mff-tab-selected-bg: #${colors.base01};
   --mff-tab-soundplaying-bg: #${colors.base00};
@@ -21,11 +23,11 @@
   --mff-urlbar-focused-color: #${colors.base07};
   --mff-urlbar-font-family: "Inter", serif;
   --mff-urlbar-font-size: ${toString fontSize}pt;
-  --mff-urlbar-font-weight: 700;
+  --mff-urlbar-font-weight: 400;
   --mff-urlbar-results-color: #${colors.base07};
   --mff-urlbar-results-font-family: "Inter", serif;
   --mff-urlbar-results-font-size: ${toString fontSize}pt;
-  --mff-urlbar-results-font-weight: 700;
+  --mff-urlbar-results-font-weight: 400;
   --mff-urlbar-results-url-color: #${colors.base07};
   /*   --mff-tab-selected-bg: linear-gradient(90deg, rgba(232,74,95,1) 0%, rgba(255,132,124,1) 50%, rgba(254,206,168,1) 100%); */
   /*   --mff-urlbar-font-weight: 600; */
@@ -48,105 +50,7 @@
 
 */
 
-.tab-background[selected="true"] {
-  background: var(--mff-tab-selected-bg) !important;
-}
-
-.tab-background:not[visuallyselected] {
-  background: var(--mff-tab-selected-bg) !important;
-  opacity: 0.5 !important;
-}
-
-/* This positions the tabs under the navaigator container */
-#titlebar {
-  -moz-box-ordinal-group: 3 !important;
-}
-
-.tabbrowser-tab::after,
-.tabbrowser-tab::before {
-  border-left: none !important;
-}
-
-.tab-background {
-  border: none !important;
-}
-
-.tabbrowser-arrowscrollbox {
-  margin-inline-start: 4px !important;
-  margin-inline-end: 0px !important;
-}
-
-.tab-close-button {
- display: none !important;
-}
-
-.tab-text {
-  font-family: var(--mff-tab-font-family);
-  font-weight: var(--mff-tab-font-weight);
-  font-size: var(--mff-tab-font-size) !important;
-  color: var(--mff-tab-color);
-}
-
-/* Hide the favicon for tabs */
-hbox.tab-content .tab-icon-image {
-  display: none !important;
-}
-
-/* Show the favicon for tabs that are pinned */
-hbox.tab-content[pinned=true] .tab-icon-image {
-  display: initial !important;
-}
-
-hbox.tab-content[pinned=true] .tab-text {
-  display: none !important;
-}
-
-#tabbrowser-tabs {
-  --tab-loading-fill: #033433 !important;
-
-}
-
-.tab-label-container:not([textoverflow]) {
-  display: flex;
-  overflow: hidden;
-  justify-content: center;
-width: 50% !important;
-  max-width: 50% !important;
-  min-width: 50% !important;
-}
-
-/* .tab-label-container::after {
-  content: "?" !important;
-
-} */
-
-.tab-line {
-  display: none !important;
-}
-
-.tabbrowser-tab {
-  border-radius: var(--mff-tab-border-radius) !important;
-  border-width: 0;
-  height: var(--mff-tab-height) !important;
-  margin-bottom: 4px !important;
-  margin-inline-end: 4px !important;
-  margin-top: 4px !important;
-  max-height: var(--mff-tab-height) !important;
-  min-height: var(--mff-tab-height) !important;
-}
-
-.tabbrowser-tab[soundplaying="true"] {
-  background-color: var(--mff-tab-soundplaying-bg) !important;
-}
-
-#tabs-newtab-button {
-  list-style-image: url("add.svg") !important;
-  opacity: 0.7;
-}
-
-.tab-icon-sound {
-  display: none !important;
-}
+#TabsToolbar {visibility: collapse;} /* hide tab bar */
 
 /*
   _____ ___   ___  _    ___   _   ___
@@ -215,14 +119,6 @@ width: 50% !important;
   border: none !important;
 }
 
-#back-button {
-  list-style-image: url("left-arrow.svg") !important;
-}
-
-#forward-button {
-  list-style-image: url("right-arrow.svg") !important;
-}
-
 toolbar {
   background-image: none !important;
 }
@@ -274,19 +170,18 @@ toolbar#nav-bar {
 }
 
 toolbar#nav-bar {
-  padding: 4px !important;
+  padding: 0px !important;
 }
 
 #urlbar {
-  max-width: 70% !important;
-  margin: 0 15% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
   /* 	position: unset!important; */;
 }
 
 #urlbar-input:focus {
   color: var(--mff-urlbar-focused-color) !important;
 }
-
 
 .megabar[breakout-extend="true"]:not([open="true"]) > #urlbar-background {
   box-shadow: none !important;
@@ -295,59 +190,5 @@ toolbar#nav-bar {
 
 toolbarbutton {
   box-shadow: none !important;
-}
-
-
-/*
-  ___ ___ ___  ___ ___   _   ___
- / __|_ _|   \| __| _ ) /_\ | _ \
- \__ \| || |) | _|| _ \/ _ \|   /
- |___/___|___/|___|___/_/ \_\_|_\
-*/
-
-.close-icon, .urlbar-icon {
-  fill: var(--mff-icon-color) !important;
-}
-
-.sidebar-placesTree {
-  color: var(--mff-sidebar-color) !important;
-}
-
-#sidebar-switcher-target {
-/*   color: white !important; */
-}
-
-#sidebar-box {
-  --sidebar-background-color: var(--mff-sidebar-bg) !important;
-}
-
-splitter#sidebar-splitter {
-  opacity: 0 !important;
-}
-
-splitter#sidebar-splitter {
-  border: none !important;
-  background-color: transparent !important;
-}
-
-image#sidebar-icon {
-  display: none;
-}
-
-
-/*
-    _   ___ ___  _____      _____  _   _  _ ___ _
-   /_\ | _ \ _ \/ _ \ \    / / _ \/_\ | \| | __| |
-  / _ \|   /   / (_) \ \/\/ /|  _/ _ \| .` | _|| |__
- /_/ \_\_|_\_|_\\___/ \_/\_/ |_|/_/ \_\_|\_|___|____|
- */
-
-.panel-arrowcontent {
-  padding: 0px !important;
-  margin: 0px !important;
-}
-
-toolbarseparator {
-  display: none;
 }
 ''

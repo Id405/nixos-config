@@ -118,6 +118,9 @@ in
       extraConfig = ''
       # Monitors
       monitor=eDP-1,2256x1504@60,0x0,1.3
+
+      # HiDPI XWayland
+      exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
       
       # Programs
       bind=SUPER,Return,exec,${terminalEmulator}
@@ -152,7 +155,7 @@ in
       animation=global,1,2,default
 
       general {
-          border_size = 2
+          border_size = 0
           col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
           col.active_border = rgba(${config.colorscheme.colors.base08}ff)
           gaps_in = 12
@@ -197,6 +200,10 @@ in
 	"wlr/workspaces" = {
     	  all-outputs = true;
     	  format = "{name}";
+	};
+
+	"clock" = {
+  	  format = "{:%I:%M %p}";
 	};
       };
       style = ''
@@ -304,6 +311,7 @@ in
         color19 = "#${config.colorScheme.colors.base02}";
         color20 = "#${config.colorScheme.colors.base04}";
         color21 = "#${config.colorScheme.colors.base06}";
+        linux_display_server = "wayland";
       };
   };
 
@@ -328,6 +336,14 @@ in
       };
   };
 
+  # Cursor
+  home.pointerCursor = {
+      name = "Numix-Cursor-Light";
+      package = pkgs.numix-cursor-theme;
+      size = 32;
+      gtk.enable = true;
+      x11.enable = true;
+  };
 
   # Better command not found
   programs.command-not-found.enable = false;
@@ -341,7 +357,9 @@ in
       enable = true;
       profiles."default" = {
           userChrome = import ./firefox/userChrome.nix {
-             colors=config.colorScheme.colors;
+             colors=config.colorScheme.colors; 
+             fontSize=fontSize; 
+             fontSizeSmall=fontSizeSmall;
       	  };
       	  userContent = import ./firefox/userContent.nix {
              colors=config.colorScheme.colors;
