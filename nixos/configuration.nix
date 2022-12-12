@@ -45,7 +45,15 @@
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
     };
+
+    gc = {
+        automatic = true;
+        options = "--delete-older-than 7d";
+    };
   };
+
+  # Filesystem stuff [*_*]
+  fileSystems."/".options = [ "compress=zstd" ]; # zstd compression :)
 
   # We need git for nix-rebuild to work
   programs.git.enable = true;
@@ -91,6 +99,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.initrd.verbose = false; # Silent boot
+  boot.consoleLogLevel = 3;
+  boot.kernelParams = [ "quiet" "udev.log_level=3" ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Users \O/ \O/ \O/ <--- imagine these as lots of people
