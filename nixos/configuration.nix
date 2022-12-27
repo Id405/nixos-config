@@ -24,10 +24,8 @@
       #   });
       # })
     ];
-    
-    config = {
-      allowUnfree = true;
-    };
+
+    config = { allowUnfree = true; };
   };
 
   # nix wizardry <]:) <-- a little guy with a wizard hat
@@ -38,7 +36,8 @@
 
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
+      config.nix.registry;
 
     # Enable the good shit
     settings = {
@@ -47,8 +46,8 @@
     };
 
     gc = {
-        automatic = true;
-        options = "--delete-older-than 7d";
+      automatic = true;
+      options = "--delete-older-than 7d";
     };
   };
 
@@ -60,9 +59,7 @@
 
   # Other root packages
   programs.zsh.enable = true;
-  environment.systemPackages = [
-      pkgs.pciutils
-  ];
+  environment.systemPackages = [ pkgs.pciutils ];
 
   # Internationalization stuff (#) <--- maybe it is sitelen pona ma?
   time.timeZone = "America/Los_Angeles";
@@ -77,11 +74,11 @@
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
   };
 
   # Enable opengl
@@ -96,13 +93,26 @@
   networking.networkmanager.enable = true;
 
   # Bootloader and kernel :0
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  boot.initrd.verbose = false; # Silent boot
-  boot.consoleLogLevel = 3;
-  boot.kernelParams = [ "quiet" "udev.log_level=3" ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      efi.efiSysMountPoint = "/boot/efi";
+      timeout = 0;
+    };
+    initrd = {
+      systemd.enable = true;
+      verbose = false;
+    };
+    consoleLogLevel = 0;
+    kernelParams = [ "quiet" "udev.log_level=3" ];
+    kernelPackages = pkgs.linuxPackages_latest;
+    plymouth.enable = true;
+  };
+
+  # Silent getty
+  services.getty.extraArgs =
+    [ "--skip-login" "--nonewline" "--noissue" "--noclear" ];
 
   # Users \O/ \O/ \O/ <--- imagine these as lots of people
   users.users = {
