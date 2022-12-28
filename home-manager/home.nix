@@ -96,13 +96,16 @@ in {
 
     # Daemons
     wl-clipboard
+    rust-analyzer
 
     # cli
     unzip
     exa
     nixfmt
+    rustup
 
     # gui
+    pavucontrol
     spotify
     cinnamon.nemo
     slurp
@@ -210,7 +213,7 @@ in {
     };
     style = ''
       	* {
-          	  border: none;
+         	  border: none;
           	  border-radius: 0;
           	  font-family: Inter;
           	  font-size: ${toString fontSizeSmall}pt;
@@ -218,8 +221,8 @@ in {
           	  color: #fff;
       	}
       	#workspaces button.active {
-          	  color: #fff;
-          	}
+        	  color: #fff;
+        }
     '';
   };
 
@@ -400,13 +403,79 @@ in {
     enable = true;
     config = {
       colorScheme = "default";
+      autoInfo = null;
       ui.assistant = "none";
-      ui.enableMouse = true;
-      hooks = [
+      keyMappings = [
         {
+          key = "q";
+          effect = "b";
+          mode = "normal";
+        }
+
+        {
+          key = "Q";
+          effect = "B";
+          mode = "normal";
+        }
+
+        {
+          key = "<a-q>";
+          effect = "<a-b>";
+          mode = "normal";
+        }
+
+        {
+          key = "<a-Q>";
+          effect = "<a-B>";
+          mode = "normal";
+        }
+
+        {
+          key = "b";
+          effect = ":enter-user-mode tabs<ret>";
+          docstring = "tabs";
+          mode = "normal";
+        }
+
+        {
+          key = "B";
+          effect = ":enter-user_mode -lock tabs<ret>";
+          docstring = "tabs (lock)";
+          mode = "normal";
+        }
+      ];
+      hooks = [
+        { # Enable kakboard
           commands = "kakboard-enable";
           name = "WinCreate";
           option = ".*";
+        }
+
+        { # Enable kak-lsp
+          commands = "eval %sh{kak-lsp --kakoune -s $kak_session}";
+          name = "WinCreate";
+          option = ".*";
+        }
+
+        { # customize colors, modeline
+          commands = ''
+            set-face window MenuBackground default,default
+            set-face window MenuForeground black,red
+            set-face window Information default,default
+            set-option global modelinefmt_tabs '%val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}}'
+            set-option global tab_seperator ' '
+          '';
+          name = "WinCreate";
+          option = ".*";
+        }
+
+        {
+          commands = ''
+            lsp-enable-window
+            lsp-auto-hover-enable
+          '';
+          name = "WinSetOption";
+          option = "filetype=(rust)";
         }
 
         {
@@ -416,13 +485,19 @@ in {
         }
 
         {
+          commands = "set-option buffer formatcmd 'rustfmt'";
+          name = "BufSetOption";
+          option = "filetype=rust";
+        }
+
+        {
           commands = "format";
           name = "BufWritePre";
           option = ".*";
         }
       ];
     };
-    plugins = with pkgs; [ kakounePlugins.kakboard ];
+    plugins = with pkgs.kakounePlugins; [ kakboard kak-lsp tabs-kak ];
   };
 
   # Fish  
@@ -446,6 +521,15 @@ in {
       cd = "z";
       ls = "exa";
     };
+    plugins = [{
+      name = "hydro";
+      src = pkgs.fetchFromGitHub {
+        owner = "jorgebucaran";
+        repo = "hydro";
+        rev = "d4c107a2c99d1066950a09f605bffea61fc0efab";
+        sha256 = "1ajh6klw1rkn2mqk4rdghflxlk6ykc3wxgwp2pzfnjd58ba161ki";
+      };
+    }];
   };
 
   # btop
