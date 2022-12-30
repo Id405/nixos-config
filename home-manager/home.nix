@@ -123,74 +123,74 @@ in {
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
-            # Monitors
-            monitor=eDP-1,2256x1504@60,0x0,1.3
+      # Monitors
+      monitor=eDP-1,2256x1504@60,0x0,1.3
 
-            # HiDPI XWayland
-            exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
+      # HiDPI XWayland
+      exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
             
-            # Programs
-            bind=SUPER,Return,exec,${terminalEmulator}
-            bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
-            bind=SUPER,b,exec,grimshot copy area
+      # Programs
+      bind=SUPER,Return,exec,${terminalEmulator}
+      bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
+      bind=SUPER,b,exec,grimshot copy area
 
-            # Wm controls
-            bind=SUPER,c,killactive
-            bind=SUPER,bracketright,workspace,+1
-            bind=SUPER,bracketleft,workspace,-1
-            bind=SUPERSHIFT,bracketright,movetoworkspace,+1
-            bind=SUPERSHIFT,bracketleft,movetoworkspace,-1
-            bind=SUPER,f,togglefloating
-            bind=SUPERSHIFT,f,fullscreen
-            bind=SUPER,t,cyclenext
-            bind=SUPERSHIFT,t,cyclenext,prev
-            bind=SUPERSHIFT,q,exit
+      # Wm controls
+      bind=SUPER,c,killactive
+      bind=SUPER,bracketright,workspace,+1
+      bind=SUPER,bracketleft,workspace,-1
+      bind=SUPERSHIFT,bracketright,movetoworkspace,+1
+      bind=SUPERSHIFT,bracketleft,movetoworkspace,-1
+      bind=SUPER,f,togglefloating
+      bind=SUPERSHIFT,f,fullscreen
+      bind=SUPER,t,cyclenext
+      bind=SUPERSHIFT,t,cyclenext,prev
+      bind=SUPERSHIFT,q,exit
 
-            # Mouse bindings
-            bindm=SUPER,v,movewindow
-            bindm=SUPERALT,v,resizewindow
-            bindm=SUPER,mouse:272,movewindow
-            bindm=SUPER,mouse:273,movewindow
+      # Mouse bindings
+      bindm=SUPER,v,movewindow
+      bindm=SUPERALT,v,resizewindow
+      bindm=SUPER,mouse:272,movewindow
+      bindm=SUPER,mouse:273,movewindow
 
-            # status bar
-            exec-once="waybar"
+      # status bar
+      exec-once="waybar"
 
-            # wallpaper
-            exec-once=swaybg --color "##${config.colorScheme.colors.base00}"
+      # wallpaper
+      exec-once=swaybg --color "##${config.colorScheme.colors.base00}"
 
-            # animations
-            animation=global,1,2,default
+      # animations
+      animation=global,1,2,default
 
-            general {
-                border_size = 0
-                col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
-                col.active_border = rgba(${config.colorscheme.colors.base08}ff)
-                gaps_in = 12
-                gaps_out = 12
-                cursor_inactive_timeout = 30
-            }
+      general {
+        border_size = 0
+        col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
+        col.active_border = rgba(${config.colorscheme.colors.base08}ff)
+        gaps_in = 12
+        gaps_out = 12
+        cursor_inactive_timeout = 30
+      }
             
-            misc {
-                disable_hyprland_logo = true
-            }
+      misc {
+        disable_hyprland_logo = true
+      }
 
-            decoration {
-      	rounding = 12;
-            }
+      decoration {
+        rounding = 12;
+      }
 
-            gestures {
-      	workspace_swipe = true;
-      	workspace_swipe_invert = false;
-            }
+      gestures {
+        workspace_swipe = true;
+        workspace_swipe_invert = false;
+      }
 
-            input {
-              kb_layout = us
-              kb_variant = colemak
+      input {
+        kb_layout = us
+        kb_variant = colemak
 
-              touchpad {
-                  disable_while_typing=false
-              }
-            }
+        touchpad {
+          disable_while_typing=false
+        }
+      }
     '';
   };
 
@@ -212,17 +212,18 @@ in {
       "clock" = { format = "{:%I:%M %p}"; };
     };
     style = ''
-      	* {
-         	  border: none;
-          	  border-radius: 0;
-          	  font-family: Inter;
-          	  font-size: ${toString fontSizeSmall}pt;
-          	  background-color: #${config.colorScheme.colors.base00};
-          	  color: #fff;
-      	}
-      	#workspaces button.active {
-        	  color: #fff;
-        }
+      * {
+        border: none;
+        border-radius: 0;
+        font-family: Inter;
+        font-size: ${toString fontSizeSmall}pt;
+        background-color: #${config.colorScheme.colors.base00};
+        color: #fff;
+      }
+
+      #workspaces button.active {
+        color: #fff;
+      }
     '';
   };
 
@@ -372,13 +373,13 @@ in {
   programs.discocss = {
     enable = true;
     css = ''
-      	.theme-dark {
-          	  --saturation-factor: 0;
-          	  --background-primary: ${config.colorScheme.colors.base00};
-          	  --background-primary-alt: ${config.colorScheme.colors.base01};
-          	  --background-secondary: ${config.colorScheme.colors.base00};
-          	  --background-secondary-alt: ${config.colorScheme.colors.base01};
-      	}
+      .theme-dark {
+        --saturation-factor: 0;
+        --background-primary: ${config.colorScheme.colors.base00};
+        --background-primary-alt: ${config.colorScheme.colors.base01};
+        --background-secondary: ${config.colorScheme.colors.base00};
+        --background-secondary-alt: ${config.colorScheme.colors.base01};
+      }
     '';
   };
 
@@ -432,16 +433,16 @@ in {
 
         {
           key = "b";
-          effect = ":enter-user-mode tabs<ret>";
-          docstring = "tabs";
+          effect = ":enter-buffers-mode<ret>";
           mode = "normal";
+          docstring = "buffers...";
         }
 
         {
           key = "B";
-          effect = ":enter-user_mode -lock tabs<ret>";
-          docstring = "tabs (lock)";
+          effect = ":enter-user-mode -lock buffers<ret>";
           mode = "normal";
+          docstring = "buffers (lock)...";
         }
       ];
       hooks = [
@@ -451,19 +452,11 @@ in {
           option = ".*";
         }
 
-        { # Enable kak-lsp
-          commands = "eval %sh{kak-lsp --kakoune -s $kak_session}";
-          name = "WinCreate";
-          option = ".*";
-        }
-
         { # customize colors, modeline
           commands = ''
             set-face window MenuBackground default,default
             set-face window MenuForeground black,red
             set-face window Information default,default
-            set-option global modelinefmt_tabs '%val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}}'
-            set-option global tab_seperator ' '
           '';
           name = "WinCreate";
           option = ".*";
@@ -497,7 +490,18 @@ in {
         }
       ];
     };
-    plugins = with pkgs.kakounePlugins; [ kakboard kak-lsp tabs-kak ];
+    plugins = with pkgs.kakounePlugins; [ kakboard kak-lsp kakoune-buffers ];
+    extraConfig = ''
+      eval %sh{kak-lsp --kakoune -s $kak_session}
+
+      hook global WinDisplay .* info-buffers
+
+      alias global bd delete-buffer
+      alias global bf buffer-first
+      alias global bl buffer-last
+      alias global bo buffer-only
+      alias global bo! buffer-only-force
+    '';
   };
 
   # Fish  
