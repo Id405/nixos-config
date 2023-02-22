@@ -1,8 +1,8 @@
 { inputs, lib, config, pkgs, ... }:
 let
   inherit (inputs.nix-colors) colorSchemes;
-  inherit (inputs.nix-colors.lib-contrib { inherit pkgs; })
-    gtkThemeFromScheme nixWallpaperFromScheme;
+  inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
+  nixWallpaperFromScheme = import ./nix-wallpaper.nix { inherit pkgs; };
   summercamp-desaturated = {
     name = "Summercamp Desaturated";
     slug = "summercamp-desaturated";
@@ -34,6 +34,7 @@ in {
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     inputs.nix-colors.homeManagerModule
     inputs.hyprland.homeManagerModules.default
+    inputs.webcord.homeManagerModules.default
 
     # You can also split up your configuration and import pieces of it here:
     # ./nvim.nix
@@ -56,10 +57,6 @@ in {
           mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
         });
       })
-
-      (self: super: {
-        discord = super.discord.override { withOpenASAR = true; };
-      })
     ];
     # Configure your nixpkgs instance
     config = {
@@ -73,7 +70,10 @@ in {
   home = {
     username = "lily";
     homeDirectory = "/home/lily";
-    sessionVariables = { EDITOR = "kak"; };
+    sessionVariables = {
+      EDITOR = "kak";
+      NIXOS_OZONE_WL = "1";
+    };
   };
 
   # Add stuff for your user as you see fit:
@@ -111,7 +111,6 @@ in {
     slurp
     grim
     sway-contrib.grimshot
-    zathura
     libreoffice
     swaybg
     texlive.combined.scheme-full
@@ -156,7 +155,14 @@ in {
       exec-once="waybar"
 
       # wallpaper
-      exec-once=swaybg --color "##${config.colorScheme.colors.base00}"
+      exec-once=swaybg -i "${
+        nixWallpaperFromScheme {
+          scheme = config.colorscheme;
+          width = 2256;
+          height = 1504;
+          logoscale = 5.0;
+        }
+      }"
 
       # animations
       animation=global,1,2,default
@@ -172,6 +178,8 @@ in {
             
       misc {
         disable_hyprland_logo = true
+        enable_swallow = true
+        swallow_regex = '^(kitty)$'
       }
 
       decoration {
@@ -369,6 +377,9 @@ in {
     };
   };
 
+  # Webcord
+  programs.webcord = { enable = true; };
+
   # Discocss
   programs.discocss = {
     enable = true;
@@ -381,6 +392,18 @@ in {
         --background-secondary-alt: ${config.colorScheme.colors.base01};
       }
     '';
+  };
+
+  # Zathura
+  programs.zathura = {
+    enable = true;
+    options = {
+      default-bg = "${config.colorScheme.colors.base00}";
+      default-fg = "${config.colorScheme.colors.base07}";
+      completion-bg = "${config.colorScheme.colors.base08}";
+      inputbar-bg = "${config.colorScheme.colors.base00}";
+      inputbar-fg = "${config.colorScheme.colors.base08}";
+    };
   };
 
   # Vscode
