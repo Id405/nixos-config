@@ -43,6 +43,12 @@
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
+      substituters =
+        [ "https://webcord.cachix.org" "https://hyprland.cachix.org" ];
+      trusted-public-keys = [
+        "webcord.cachix.org-1:l555jqOZGHd2C9+vS8ccdh8FhqnGe8L78QrHNn+EFEs="
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      ];
     };
 
     gc = {

@@ -2,7 +2,7 @@
 let
   inherit (inputs.nix-colors) colorSchemes;
   inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
-  nixWallpaperFromScheme = import ./nix-wallpaper.nix { inherit pkgs; };
+  nixWallpaperFromScheme = import ./wallpaper.nix { inherit pkgs; };
   summercamp-desaturated = {
     name = "Summercamp Desaturated";
     slug = "summercamp-desaturated";
@@ -114,6 +114,7 @@ in {
     libreoffice
     swaybg
     texlive.combined.scheme-full
+    inkscape
   ];
 
   # Color scheme
@@ -155,12 +156,14 @@ in {
       exec-once="waybar"
 
       # wallpaper
-      exec-once=swaybg -i "${
+      exec=swaybg -i "${
         nixWallpaperFromScheme {
           scheme = config.colorscheme;
           width = 2256;
           height = 1504;
-          logoscale = 5.0;
+          logoScale = 5.0;
+          fontName = "Inter";
+          versionText = inputs.nixpkgs.lib.version;
         }
       }"
 
