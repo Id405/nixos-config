@@ -78,6 +78,7 @@
   # Sound 0^0 <--- its like a headphones or maybe an owl face
   sound.enable = true;
   hardware.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true; # enable bluetooth
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -86,9 +87,13 @@
     pulse.enable = true;
     jack.enable = true;
   };
+  xdg.portal.wlr.enable = true;
 
   # Enable opengl
   hardware.opengl.enable = true;
+
+  # Install steam
+  programs.steam.enable = true;
 
   # Enable at-spi2-core
   services.gnome.at-spi2-core.enable = true;
@@ -129,8 +134,23 @@
     };
   };
 
+  programs.fish.enable = true;
+
   # Automatic login :DDDDD
-  services.getty.autologinUser = "lily";
+  #services.getty.autologinUser = "lily";
+
+  # KDE
+  # services.xserver.enable = true;
+  # services.xserver.displayManager.sddm.enable = true;
+  # services.xserver.desktopManager.plasma5.enable = true;
+  # services.xserver.displayManager.session = [{
+  #    manage = "window";
+  #    name = "Hyprland";
+  #    start = ''
+  #    exec Hyprland &> /dev/null
+  #    waitPID=$!
+  #    '';
+  # }];
 
   # No sudo password
   security.sudo.wheelNeedsPassword = false;

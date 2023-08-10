@@ -29,7 +29,7 @@ pkgs.stdenv.mkDerivation {
          fill="#${scheme.colors.base0D}" style="isolation:auto;mix-blend-mode:normal"/>
       <text
          xml:space="preserve"
-         style="font-size:214.991px;fill:#${scheme.colors.base0D};stroke-width:17.916"
+         style="font-size:214.991px;stroke-width:17.916"
          x="-572.62247"
          y="184.64108"
          ><tspan
@@ -37,7 +37,7 @@ pkgs.stdenv.mkDerivation {
            id="tspan367"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inter;-inkscape-font-specification:Inter;stroke-width:17.916"
            x="-572.62247"
-           y="184.64108">NixOs</tspan></text>
+           y="184.64108">NixOS</tspan></text>
       <text
          xml:space="preserve"
          style="font-size:86.3171px;stroke-width:7.19314"
@@ -46,7 +46,7 @@ pkgs.stdenv.mkDerivation {
          ><tspan
            sodipodi:role="line"
            id="tspan367-7-3"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Inter;-inkscape-font-specification:Inter;stroke-width:7.19314"
+           style="font-style:normal;font-variant:normal;fill:#${scheme.colors.base0D};font-weight:normal;font-stretch:normal;font-family:Inter;-inkscape-font-specification:Inter;stroke-width:7.19314"
            x="-530.67476"
            y="282.20279">${versionText}</tspan></text>
               </g>

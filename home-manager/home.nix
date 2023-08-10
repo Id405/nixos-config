@@ -103,6 +103,8 @@ in {
     exa
     nixfmt
     rustup
+    libqalculate
+    killall
 
     # gui
     pavucontrol
@@ -115,6 +117,16 @@ in {
     swaybg
     texlive.combined.scheme-full
     inkscape
+    blueberry
+    blender
+    gimp
+
+    # Audio Production
+    reaper
+    helm
+    vital
+    yabridge
+    yabridgectl
   ];
 
   # Color scheme
@@ -346,6 +358,12 @@ in {
     package = gtkThemeFromScheme { scheme = config.colorScheme; };
   };
 
+  # XDG
+  xdg = {
+      enable = true;
+      mime.enable = true;
+  };
+
   # Cursor
   home.pointerCursor = {
     name = "Numix-Cursor-Light";
@@ -507,12 +525,6 @@ in {
           commands = "set-option buffer formatcmd 'rustfmt'";
           name = "BufSetOption";
           option = "filetype=rust";
-        }
-
-        {
-          commands = "format";
-          name = "BufWritePre";
-          option = ".*";
         }
       ];
     };
