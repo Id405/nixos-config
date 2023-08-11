@@ -96,7 +96,6 @@ in {
 
     # Daemons
     wl-clipboard
-    rust-analyzer
 
     # cli
     unzip

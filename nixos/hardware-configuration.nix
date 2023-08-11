@@ -16,7 +16,7 @@
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/8792ec08-06b4-4c2e-9e48-3723799f8594";
       fsType = "btrfs";
-      options = [ "subvol=@" "compress=zstd" ];
+      options = [ "subvol=@" ];
     };
 
   fileSystems."/boot/efi" =
@@ -36,6 +36,4 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  # high-resolution display
-  hardware.video.hidpi.enable = lib.mkDefault true;
 }
