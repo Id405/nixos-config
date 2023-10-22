@@ -3,6 +3,7 @@
     # If you want to use modules from other flakes (such as nixos-hardware):
     # inputs.hardware.nixosModules.common-cpu-amd
     # inputs.hardware.nixosModules.common-ssd
+    inputs.musnix.nixosModules.musnix
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -87,7 +88,7 @@
     pulse.enable = true;
     jack.enable = true;
   };
-  xdg.portal.wlr.enable = true;
+  musnix.enable = true;
 
   # Enable opengl
   hardware.opengl.enable = true;
@@ -129,15 +130,17 @@
   users.users = {
     lily = {
       isNormalUser = true;
-      extraGroups = [ "networkmanager" "wheel" ];
+      extraGroups = [ "networkmanager" "wheel" "audio" ];
       shell = pkgs.fish;
     };
   };
 
   programs.fish.enable = true;
 
+  programs.hyprland.enable = true;
+
   # Automatic login :DDDDD
-  #services.getty.autologinUser = "lily";
+  services.getty.autologinUser = "lily";
 
   # KDE
   # services.xserver.enable = true;

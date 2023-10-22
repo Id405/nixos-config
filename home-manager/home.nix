@@ -2,7 +2,7 @@
 let
   inherit (inputs.nix-colors) colorSchemes;
   inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
-  nixWallpaperFromScheme = import ./wallpaper.nix { inherit pkgs; };
+  nixWallpaperFromScheme = import ./wallpaperclean.nix { inherit pkgs; };
   summercamp-desaturated = {
     name = "Summercamp Desaturated";
     slug = "summercamp-desaturated";
@@ -34,7 +34,6 @@ in {
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     inputs.nix-colors.homeManagerModule
     inputs.hyprland.homeManagerModules.default
-    inputs.webcord.homeManagerModules.default
 
     # You can also split up your configuration and import pieces of it here:
     # ./nvim.nix
@@ -99,11 +98,12 @@ in {
 
     # cli
     unzip
-    exa
+    eza
     nixfmt
     rustup
     libqalculate
     killall
+    yt-dlp
 
     # gui
     pavucontrol
@@ -119,13 +119,23 @@ in {
     blueberry
     blender
     gimp
+    libreoffice
 
     # Audio Production
     reaper
-    helm
     vital
+    helm
+    lsp-plugins
     yabridge
     yabridgectl
+    mooSpace
+    dragonfly-reverb
+    hybridreverb2
+    aether-lv2
+
+    # wine
+    winetricks
+    wineWowPackages.waylandFull
   ];
 
   # Color scheme
@@ -134,85 +144,85 @@ in {
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
-      # Monitors
-      monitor=eDP-1,2256x1504@60,0x0,1.3
+        # Monitors
+        monitor=eDP-1,2256x1504@60,0x0,1.3
 
-      # HiDPI XWayland
-      exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
-            
-      # Programs
-      bind=SUPER,Return,exec,${terminalEmulator}
-      bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
-      bind=SUPER,b,exec,grimshot copy area
+        # HiDPI XWayland
+        exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
+              
+        # Programs
+        bind=SUPER,Return,exec,${terminalEmulator}
+        bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
+        bind=SUPER,b,exec,grimshot copy area
 
-      # Wm controls
-      bind=SUPER,c,killactive
-      bind=SUPER,bracketright,workspace,+1
-      bind=SUPER,bracketleft,workspace,-1
-      bind=SUPERSHIFT,bracketright,movetoworkspace,+1
-      bind=SUPERSHIFT,bracketleft,movetoworkspace,-1
-      bind=SUPER,f,togglefloating
-      bind=SUPERSHIFT,f,fullscreen
-      bind=SUPER,t,cyclenext
-      bind=SUPERSHIFT,t,cyclenext,prev
-      bind=SUPERSHIFT,q,exit
+        # Wm controls
+        bind=SUPER,c,killactive
+        bind=SUPER,bracketright,workspace,+1
+        bind=SUPER,bracketleft,workspace,-1
+        bind=SUPERSHIFT,bracketright,movetoworkspace,+1
+        bind=SUPERSHIFT,bracketleft,movetoworkspace,-1
+        bind=SUPER,f,togglefloating
+        bind=SUPERSHIFT,f,fullscreen
+        bind=SUPER,t,cyclenext
+        bind=SUPERSHIFT,t,cyclenext,prev
+        bind=SUPERSHIFT,q,exit
 
-      # Mouse bindings
-      bindm=SUPER,v,movewindow
-      bindm=SUPERALT,v,resizewindow
-      bindm=SUPER,mouse:272,movewindow
-      bindm=SUPER,mouse:273,movewindow
+        # Mouse bindings
+        bindm=SUPER,v,movewindow
+        bindm=SUPERALT,v,resizewindow
+        bindm=SUPER,mouse:272,movewindow
+        bindm=SUPER,mouse:273,movewindow
 
-      # status bar
-      exec-once="waybar"
+        # status bar
+        exec-once="waybar"
 
-      # wallpaper
-      exec=swaybg -i "${
-        nixWallpaperFromScheme {
-          scheme = config.colorscheme;
-          width = 2256;
-          height = 1504;
-          logoScale = 5.0;
-          fontName = "Inter";
-          versionText = inputs.nixpkgs.lib.version;
+        # wallpaper
+        exec=swaybg -i "${
+          nixWallpaperFromScheme {
+            scheme = config.colorscheme;
+            width = 2256;
+            height = 1504;
+            logoScale = 5.0;
+            fontName = "Inter";
+            versionText = inputs.nixpkgs.lib.version;
+          }
+        }"
+
+        # animations
+        animation=global,1,2,default
+
+        general {
+          border_size = 0
+          col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
+          col.active_border = rgba(${config.colorscheme.colors.base08}ff)
+          gaps_in = 12
+          gaps_out = 12
+          cursor_inactive_timeout = 30
+      32}
+              
+        misc {
+          disable_hyprland_logo = true
+          enable_swallow = true
+          swallow_regex = '^(kitty)$'
         }
-      }"
 
-      # animations
-      animation=global,1,2,default
-
-      general {
-        border_size = 0
-        col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
-        col.active_border = rgba(${config.colorscheme.colors.base08}ff)
-        gaps_in = 12
-        gaps_out = 12
-        cursor_inactive_timeout = 30
-      }
-            
-      misc {
-        disable_hyprland_logo = true
-        enable_swallow = true
-        swallow_regex = '^(kitty)$'
-      }
-
-      decoration {
-        rounding = 12;
-      }
-
-      gestures {
-        workspace_swipe = true;
-        workspace_swipe_invert = false;
-      }
-
-      input {
-        kb_layout = us
-        kb_variant = colemak
-
-        touchpad {
-          disable_while_typing=false
+        decoration {
+          rounding = 12;
         }
-      }
+
+        gestures {
+          workspace_swipe = true;
+          workspace_swipe_invert = false;
+        }
+
+        input {
+          kb_layout = us
+          kb_variant = colemak
+
+          touchpad {
+            disable_while_typing=false
+          }
+        }
     '';
   };
 
@@ -241,6 +251,8 @@ in {
         font-size: ${toString fontSizeSmall}pt;
         background-color: #${config.colorScheme.colors.base00};
         color: #fff;
+        padding-left: 5px;
+        padding-right: 5px;
       }
 
       #workspaces button.active {
@@ -290,7 +302,7 @@ in {
   };
 
   # mako
-  programs.mako = { enable = true; };
+  services.mako.enable = true;
 
   # Fonts
   fonts.fontconfig.enable = true;
@@ -357,10 +369,9 @@ in {
     package = gtkThemeFromScheme { scheme = config.colorScheme; };
   };
 
-  # XDG
   xdg = {
-      enable = true;
-      mime.enable = true;
+    enable = true;
+    mime.enable = true;
   };
 
   # Cursor
@@ -397,9 +408,6 @@ in {
     };
   };
 
-  # Webcord
-  programs.webcord = { enable = true; };
-
   # Discocss
   programs.discocss = {
     enable = true;
@@ -420,9 +428,10 @@ in {
     options = {
       default-bg = "${config.colorScheme.colors.base00}";
       default-fg = "${config.colorScheme.colors.base07}";
-      completion-bg = "${config.colorScheme.colors.base08}";
-      inputbar-bg = "${config.colorScheme.colors.base00}";
-      inputbar-fg = "${config.colorScheme.colors.base08}";
+      #completion-bg = "${config.colorScheme.colors.base08}";
+      #inputbar-bg = "${config.colorScheme.colors.base00}";
+      #inputbar-fg = "${config.colorScheme.colors.base08}";
+      recolor = true;
     };
   };
 
@@ -430,11 +439,11 @@ in {
   programs.vscode = {
     enable = true;
     extensions = [ pkgs.vscode-extensions.james-yu.latex-workshop ];
-    userSettings = { "keyboard.dispatch" = "keyCode"; };
+    userSettings = {
+      "keyboard.dispatch" = "keyCode";
+      "window.menuBarVisibility" = "hidden";
+    };
   };
-
-  # fzf
-  programs.fzf = { enable = true; };
 
   # zoxide
   programs.zoxide = {
@@ -559,8 +568,7 @@ in {
         "eval $EDITOR /etc/nixos/nixos/configuration.nix; and env -C /etc/nixos /etc/nixos/build.sh";
     };
     shellAliases = {
-      cd = "z";
-      ls = "exa";
+      ls = "eza";
     };
     plugins = [{
       name = "hydro";

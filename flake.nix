@@ -14,9 +14,9 @@
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland.inputs.nixpkgs.follows = "nixpkgs";
 
-    webcord.url = "github:fufexan/webcord-flake";
-
     nix-colors.url = "github:misterio77/nix-colors";
+
+    musnix.url = "github:musnix/musnix";
   };
 
   outputs = { nixpkgs, home-manager, ... }@inputs: {
