@@ -103,6 +103,7 @@
   # Networking :/
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
+  networking.nftables.enable = true;
 
   # Bootloader and kernel :0
   boot = {

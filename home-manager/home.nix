@@ -426,12 +426,16 @@ in {
   programs.zathura = {
     enable = true;
     options = {
-      default-bg = "${config.colorScheme.colors.base00}";
-      default-fg = "${config.colorScheme.colors.base07}";
-      #completion-bg = "${config.colorScheme.colors.base08}";
-      #inputbar-bg = "${config.colorScheme.colors.base00}";
-      #inputbar-fg = "${config.colorScheme.colors.base08}";
+      default-bg = "#${config.colorScheme.colors.base00}";
+      default-fg = "#${config.colorScheme.colors.base07}";
+      inputbar-bg = "#${config.colorScheme.colors.base00}";
+      inputbar-fg = "#${config.colorScheme.colors.base07}";
+      statusbar-bg = "#${config.colorScheme.colors.base00}";
+      statusbar-fg = "#${config.colorScheme.colors.base07}";
+      recolor-lightcolor = "#${config.colorScheme.colors.base00}";
+      recolor-darkcolor = "#${config.colorScheme.colors.base07}";
       recolor = true;
+      guioptions = "none";
     };
   };
 
