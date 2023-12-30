@@ -129,23 +129,41 @@
   systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
 
   # Power management
-  #powerManagement.enable = true;
-  #services.thermald.enable = true;
-  #services.tlp = {
-  #  enable = true;
-  #  settings = {
-  #    CPU_SCALING_GOVERNOR_ON_AC = "performance";
-  #    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+  powerManagement.enable = true;
+  services.thermald.enable = true;
+  services.tlp = {
+    enable = true;
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
 
-  #    CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-  #    CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
 
-  #    CPU_BOOST_ON_BAT = 0;
-  #    START_CHARGE_THRESH_BAT0 = 90;
-  #    STOP_CHARGE_THRESH_BAT0 = 97;
-  #    RUNTIME_PM_ON_BAT = "auto";
-  #  };
-  #};
+      CPU_BOOST_ON_BAT = 0;
+      START_CHARGE_THRESH_BAT0 = 90;
+      STOP_CHARGE_THRESH_BAT0 = 97;
+      RUNTIME_PM_ON_BAT = "auto";
+    };
+  };
+
+  # Backlight
+  programs.light.enable = true;
+  services.actkbd = {
+    enable = true;
+    bindings = [
+      {
+        keys = [ 224 ];
+        events = [ "key" ];
+        command = "/run/current-system/sw/bin/light -A 10";
+      }
+      {
+        keys = [ 225 ];
+        events = [ "key" ];
+        command = "/run/current-system/sw/bin/light -U 10";
+      }
+    ];
+  };
 
   # Silent getty
   services.getty.extraArgs =

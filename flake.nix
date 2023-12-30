@@ -11,9 +11,6 @@
 
     hardware.url = "github:nixos/nixos-hardware";
 
-    hyprland.url = "github:hyprwm/Hyprland";
-    hyprland.inputs.nixpkgs.follows = "nixpkgs";
-
     nix-colors.url = "github:misterio77/nix-colors";
 
     musnix.url = "github:musnix/musnix";
