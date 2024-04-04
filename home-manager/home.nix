@@ -4,6 +4,7 @@ let
   inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
   nixWallpaperFromScheme = import ./wallpaperclean.nix { inherit pkgs; };
   nixWallpaperFromSchemeDetailed = import ./wallpaper.nix { inherit pkgs; };
+  sioyek-developement = pkgs.qt6.callPackage ../customPackages/sioyek.nix {};
   summercamp-desaturated = {
     name = "Summercamp Desaturated";
     slug = "summercamp-desaturated";
@@ -95,6 +96,7 @@ in {
 
     # Daemons
     wl-clipboard
+    polkit_gnome
 
     # cli
     unzip
@@ -121,6 +123,7 @@ in {
     gimp
     libreoffice
     musescore
+    riseup-vpn
 
     # Audio Production
     reaper
@@ -137,6 +140,11 @@ in {
     # wine
     winetricks
     wineWowPackages.waylandFull
+
+    # Dependencies for unmanaged programs
+    zulu
+    openal
+    alsa-oss
   ];
 
   # Color scheme
@@ -145,95 +153,114 @@ in {
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
-              # Monitors
-              monitor=eDP-1,2256x1504@60,0x0,1.333333
-      	      monitor=,highres,auto,1
-      	
-              # HiDPI XWayland
-              exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
+                    # Monitors
+                    monitor=eDP-1,2256x1504@60,0x0,1.333333
+            	      monitor=,highres,auto,1
+            	
+                    # HiDPI XWayland
+                    exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
+                          
+                    # Programs
+                    bind=SUPER,Return,exec,${terminalEmulator}
+                    bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
+                    bind=SUPER,b,exec,grimshot copy area
+
+                    # Wm controls
+                    bind=SUPER,c,killactive
+                    bind=SUPER,bracketright,workspace,+1
+                    bind=SUPER,bracketleft,workspace,-1
+                    bind=SUPERSHIFT,bracketright,movetoworkspace,+1
+                    bind=SUPERSHIFT,bracketleft,movetoworkspace,-1
+                    bind=SUPER,f,togglefloating
+                    bind=SUPERSHIFT,f,fullscreen
+                    bind=SUPER,Tab,cyclenext
+                    bind=SUPERSHIFT,t,cyclenext,prev
+                    bind=SUPERSHIFT,q,exit
+
+                    # Mouse bindings
+                    bindm=SUPER,v,movewindow
+                    bindm=SUPERALT,v,resizewindow
+                    bindm=SUPER,mouse:272,movewindow
+                    bindm=SUPER,mouse:273,movewindow
+
+                    # status bar
+                    exec-once="waybar"
+
+                    # wallpaper
+                    exec-once=bash -c "swww init && sleep 0.1 && swww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
+                      nixWallpaperFromSchemeDetailed {
+                        scheme = config.colorscheme;
+                        width = 2256;
+                        height = 1504;
+                        logoScale = 5.0;
+                        fontName = "Inter";
+                        versionText = inputs.nixpkgs.lib.version;
+                      }
+                    } && sleep 10 && swww img --transition-type wipe --transition-angle 30 ${
+                      nixWallpaperFromScheme {
+                        scheme = config.colorscheme;
+                        width = 2256;
+                        height = 1504;
+                        logoScale = 5.0;
+                        fontName = "Inter";
+                        versionText = inputs.nixpkgs.lib.version;
+                      }
+                    }"
+
+                    # polkit
+                    exec-once="${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+
+                    # animations
+                    animation=global,1,3,default
                     
-              # Programs
-              bind=SUPER,Return,exec,${terminalEmulator}
-              bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
-              bind=SUPER,b,exec,grimshot copy area
+                    bezier=easeInBack,0.36,0,0.66,-0.56
+                    bezier=easeOutBack,0.34,1.56,0.64,1
+                    bezier=easeInOutBack,0.68,-0.6,0.32,1.6
+                    bezier=easeInOut,0.45,0,0.55,1
 
-              # Wm controls
-              bind=SUPER,c,killactive
-              bind=SUPER,bracketright,workspace,+1
-              bind=SUPER,bracketleft,workspace,-1
-              bind=SUPERSHIFT,bracketright,movetoworkspace,+1
-              bind=SUPERSHIFT,bracketleft,movetoworkspace,-1
-              bind=SUPER,f,togglefloating
-              bind=SUPERSHIFT,f,fullscreen
-              bind=SUPER,Tab,cyclenext
-              bind=SUPERSHIFT,t,cyclenext,prev
-              bind=SUPERSHIFT,q,exit
+      	      animation=windowsIn,1,4,easeOutBack,popin
+      	      animation=windowsOut,1,4,easeInBack,popin
+      	      animation=windowsMove,1,4,easeInOutBack,popin
+      	      animation=fadeIn,0
+      	      animation=fadeOut,0
+      	      animation=fade,1,1,easeInOut
 
-              # Mouse bindings
-              bindm=SUPER,v,movewindow
-              bindm=SUPERALT,v,resizewindow
-              bindm=SUPER,mouse:272,movewindow
-              bindm=SUPER,mouse:273,movewindow
+                    general {
+                      border_size = 0
+                      col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
+                      col.active_border = rgba(${config.colorscheme.colors.base08}ff)
+                      gaps_in = 12
+                      gaps_out = 12
+                      cursor_inactive_timeout = 30
+                    }
+                          
+                    misc {
+                      disable_hyprland_logo = true
+                      enable_swallow = true
+                      swallow_regex = '^(kitty)$'
+                    }
 
-              # status bar
-              exec-once="waybar"
+                    decoration {
+                      rounding = 12
+                      shadow_range = 12
+                      col.shadow = 0x22000000
+                      dim_inactive = true
+                      dim_strength = 0.05
+                    }
 
-              # wallpaper
-              exec-once=bash -c "swww init && sleep 0.1 && swww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
-                nixWallpaperFromSchemeDetailed {
-                  scheme = config.colorscheme;
-                  width = 2256;
-                  height = 1504;
-                  logoScale = 5.0;
-                  fontName = "Inter";
-                  versionText = inputs.nixpkgs.lib.version;
-                }
-              } && sleep 10 && swww img --transition-type wipe --transition-angle 30 ${
-                nixWallpaperFromScheme {
-                  scheme = config.colorscheme;
-                  width = 2256;
-                  height = 1504;
-                  logoScale = 5.0;
-                  fontName = "Inter";
-                  versionText = inputs.nixpkgs.lib.version;
-                }
-              }"
+                    gestures {
+                      workspace_swipe = true
+                      workspace_swipe_invert = false
+                    }
 
-              # animations
-              animation=global,1,2,default
+                    input {
+                      kb_layout = us
+                      kb_variant = colemak
 
-              general {
-                border_size = 0
-                col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
-                col.active_border = rgba(${config.colorscheme.colors.base08}ff)
-                gaps_in = 12
-                gaps_out = 12
-                cursor_inactive_timeout = 30
-              }
-                    
-              misc {
-                disable_hyprland_logo = true
-                enable_swallow = true
-                swallow_regex = '^(kitty)$'
-              }
-
-              decoration {
-                rounding = 12
-              }
-
-              gestures {
-                workspace_swipe = true
-                workspace_swipe_invert = false
-              }
-
-              input {
-                kb_layout = us
-                kb_variant = colemak
-
-                touchpad {
-                  disable_while_typing=false
-                }
-              }
+                      touchpad {
+                        disable_while_typing=false
+                      }
+                    }
     '';
   };
 
@@ -260,7 +287,7 @@ in {
         border-radius: 0;
         font-family: Inter;
         font-size: ${toString fontSizeSmall}pt;
-        background-color: #${config.colorScheme.colors.base00};
+        background-color: #${config.colorScheme.palette.base00};
         color: #fff;
         padding-left: 5px;
         padding-right: 5px;
@@ -279,9 +306,9 @@ in {
     theme = let inherit (config.lib.formats.rasi) mkLiteral;
     in {
       "*" = {
-        background-color = mkLiteral "#${config.colorScheme.colors.base00}";
-        foreground-color = mkLiteral "#${config.colorScheme.colors.base07}";
-        text-color = mkLiteral "#${config.colorScheme.colors.base07}";
+        background-color = mkLiteral "#${config.colorScheme.palette.base00}";
+        foreground-color = mkLiteral "#${config.colorScheme.palette.base07}";
+        text-color = mkLiteral "#${config.colorScheme.palette.base07}";
         font = "Inter ${toString fontSize}";
         border-radius = mkLiteral "0.25em";
       };
@@ -301,7 +328,7 @@ in {
       "entry" = { placeholder = "launch..."; };
 
       "selected" = {
-        background-color = mkLiteral "#${config.colorScheme.colors.base08}";
+        background-color = mkLiteral "#${config.colorScheme.palette.base08}";
       };
 
       "element-icon" = {
@@ -329,34 +356,34 @@ in {
     settings = {
       confirm_os_window_close = 0;
       window_padding_width = 12;
-      foreground = "#${config.colorScheme.colors.base05}";
-      background = "#${config.colorScheme.colors.base00}";
-      selection_background = "#${config.colorScheme.colors.base08}";
-      selection_foreground = "#${config.colorScheme.colors.base00}";
-      url_color = "#${config.colorScheme.colors.base0D}";
-      cursor = "#${config.colorScheme.colors.base07}";
-      color0 = "#${config.colorScheme.colors.base00}";
-      color1 = "#${config.colorScheme.colors.base08}";
-      color2 = "#${config.colorScheme.colors.base0B}";
-      color3 = "#${config.colorScheme.colors.base0A}";
-      color4 = "#${config.colorScheme.colors.base0D}";
-      color5 = "#${config.colorScheme.colors.base0E}";
-      color6 = "#${config.colorScheme.colors.base0C}";
-      color7 = "#${config.colorScheme.colors.base05}";
-      color8 = "#${config.colorScheme.colors.base03}";
-      color9 = "#${config.colorScheme.colors.base08}";
-      color10 = "#${config.colorScheme.colors.base0B}";
-      color11 = "#${config.colorScheme.colors.base0A}";
-      color12 = "#${config.colorScheme.colors.base0D}";
-      color13 = "#${config.colorScheme.colors.base0E}";
-      color14 = "#${config.colorScheme.colors.base0C}";
-      color15 = "#${config.colorScheme.colors.base07}";
-      color16 = "#${config.colorScheme.colors.base09}";
-      color17 = "#${config.colorScheme.colors.base0F}";
-      color18 = "#${config.colorScheme.colors.base01}";
-      color19 = "#${config.colorScheme.colors.base02}";
-      color20 = "#${config.colorScheme.colors.base04}";
-      color21 = "#${config.colorScheme.colors.base06}";
+      foreground = "#${config.colorScheme.palette.base05}";
+      background = "#${config.colorScheme.palette.base00}";
+      selection_background = "#${config.colorScheme.palette.base08}";
+      selection_foreground = "#${config.colorScheme.palette.base00}";
+      url_color = "#${config.colorScheme.palette.base0D}";
+      cursor = "#${config.colorScheme.palette.base07}";
+      color0 = "#${config.colorScheme.palette.base00}";
+      color1 = "#${config.colorScheme.palette.base08}";
+      color2 = "#${config.colorScheme.palette.base0B}";
+      color3 = "#${config.colorScheme.palette.base0A}";
+      color4 = "#${config.colorScheme.palette.base0D}";
+      color5 = "#${config.colorScheme.palette.base0E}";
+      color6 = "#${config.colorScheme.palette.base0C}";
+      color7 = "#${config.colorScheme.palette.base05}";
+      color8 = "#${config.colorScheme.palette.base03}";
+      color9 = "#${config.colorScheme.palette.base08}";
+      color10 = "#${config.colorScheme.palette.base0B}";
+      color11 = "#${config.colorScheme.palette.base0A}";
+      color12 = "#${config.colorScheme.palette.base0D}";
+      color13 = "#${config.colorScheme.palette.base0E}";
+      color14 = "#${config.colorScheme.palette.base0C}";
+      color15 = "#${config.colorScheme.palette.base07}";
+      color16 = "#${config.colorScheme.palette.base09}";
+      color17 = "#${config.colorScheme.palette.base0F}";
+      color18 = "#${config.colorScheme.palette.base01}";
+      color19 = "#${config.colorScheme.palette.base02}";
+      color20 = "#${config.colorScheme.palette.base04}";
+      color21 = "#${config.colorScheme.palette.base06}";
       linux_display_server = "wayland";
     };
   };
@@ -406,12 +433,12 @@ in {
     enable = true;
     profiles."default" = {
       userChrome = import ./firefox/userChrome.nix {
-        colors = config.colorScheme.colors;
+        colors = config.colorScheme.palette;
         fontSize = fontSize;
         fontSizeSmall = fontSizeSmall;
       };
       userContent = import ./firefox/userContent.nix {
-        colors = config.colorScheme.colors;
+        colors = config.colorScheme.palette;
       };
       settings = {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
@@ -425,10 +452,10 @@ in {
     css = ''
       .theme-dark {
         --saturation-factor: 0;
-        --background-primary: ${config.colorScheme.colors.base00};
-        --background-primary-alt: ${config.colorScheme.colors.base01};
-        --background-secondary: ${config.colorScheme.colors.base00};
-        --background-secondary-alt: ${config.colorScheme.colors.base01};
+        --background-primary: ${config.colorScheme.palette.base00};
+        --background-primary-alt: ${config.colorScheme.palette.base01};
+        --background-secondary: ${config.colorScheme.palette.base00};
+        --background-secondary-alt: ${config.colorScheme.palette.base01};
       }
     '';
   };
@@ -437,16 +464,56 @@ in {
   programs.zathura = {
     enable = true;
     options = {
-      default-bg = "#${config.colorScheme.colors.base00}";
-      default-fg = "#${config.colorScheme.colors.base07}";
-      inputbar-bg = "#${config.colorScheme.colors.base00}";
-      inputbar-fg = "#${config.colorScheme.colors.base07}";
-      statusbar-bg = "#${config.colorScheme.colors.base00}";
-      statusbar-fg = "#${config.colorScheme.colors.base07}";
-      recolor-lightcolor = "#${config.colorScheme.colors.base00}";
-      recolor-darkcolor = "#${config.colorScheme.colors.base07}";
+      default-bg = "#${config.colorScheme.palette.base00}";
+      default-fg = "#${config.colorScheme.palette.base07}";
+      inputbar-bg = "#${config.colorScheme.palette.base00}";
+      inputbar-fg = "#${config.colorScheme.palette.base07}";
+      statusbar-bg = "#${config.colorScheme.palette.base00}";
+      statusbar-fg = "#${config.colorScheme.palette.base07}";
+      recolor-lightcolor = "#${config.colorScheme.palette.base00}";
+      recolor-darkcolor = "#${config.colorScheme.palette.base07}";
       recolor = true;
       guioptions = "none";
+    };
+  };
+
+  # sioyek
+  programs.sioyek = {
+    enable = true;
+    package = sioyek-developement;
+    config = {
+      "background_color" = "#${config.colorScheme.palette.base00}";
+      "dark_mode_background_color" = "#${config.colorScheme.palette.base00}";
+      "dark_mode_contrast" = "0.94";
+      "text_highlight_color" = "#${config.colorScheme.palette.base0C}";
+      "visual_mark_color" = "#${config.colorScheme.palette.base07}";
+      "search_highlight_color" = "#${config.colorScheme.palette.base0B}";
+      "link_highlight_color" = "#${config.colorScheme.palette.base0D}";
+      "should_launch_new_window" = "1";
+      "default_dark_mode" = "1";
+      "ui_font" = "Inter";
+      "status_bar_color" = "#${config.colorScheme.palette.base00}";
+      "status_bar_text_color" = "#${config.colorScheme.palette.base07}";
+      "status_bar_font_size" = "${toString fontSize}";
+      "ui_background_color" = "#${config.colorScheme.palette.base00}";
+      "ui_text_colors" = "#${config.colorScheme.palette.base06}";
+      "ui_selected_background_color" = "#${config.colorScheme.palette.base0D}";
+      "ui_selected_text_color" = "#${config.colorScheme.palette.base00}";
+      "custom_background_color" = "#${config.colorScheme.palette.base00}";
+      "custom_text_color" = "#${config.colorScheme.palette.base07}";
+      "startup_commands" =
+        "toggle_custom_color;toggle_statusbar;toggle_presentation_mode";
+    };
+    bindings = {
+      "screen_down" = "<C-<pagedown>>";
+      "screen_up" = "<C-<pageup>>";
+      "next_page" = "<space>";
+      "previous_page" = "<S-<space>>";
+      "fit_to_page_width" = "<unbound>";
+      "fit_to_page_height" = "<f9>";
+      "fit_to_page_width_smart" = "<unbound>";
+      "fit_to_page_height_smart" = "<f10>";
+      "toggle_two_page_mode" = "a";
     };
   };
 
@@ -572,17 +639,17 @@ in {
     themes = {
       system = let
         transparent = "none";
-        gray = "#${config.colorScheme.colors.base05}";
-        dark-gray = "#${config.colorScheme.colors.base00}";
-        white = "#${config.colorScheme.colors.base07}";
-        black = "#${config.colorScheme.colors.base00}";
-        red = "#${config.colorScheme.colors.base08}";
-        green = "#${config.colorScheme.colors.base0B}";
-        yellow = "#${config.colorScheme.colors.base0A}";
-        orange = "#${config.colorScheme.colors.base09}";
-        blue = "#${config.colorScheme.colors.base0D}";
-        magenta = "#${config.colorScheme.colors.base0E}";
-        cyan = "#${config.colorScheme.colors.base0C}";
+        gray = "#${config.colorScheme.palette.base05}";
+        dark-gray = "#${config.colorScheme.palette.base00}";
+        white = "#${config.colorScheme.palette.base07}";
+        black = "#${config.colorScheme.palette.base00}";
+        red = "#${config.colorScheme.palette.base08}";
+        green = "#${config.colorScheme.palette.base0B}";
+        yellow = "#${config.colorScheme.palette.base0A}";
+        orange = "#${config.colorScheme.palette.base09}";
+        blue = "#${config.colorScheme.palette.base0D}";
+        magenta = "#${config.colorScheme.palette.base0E}";
+        cyan = "#${config.colorScheme.palette.base0C}";
       in {
         "ui.menu" = transparent;
         "ui.menu.selected" = { modifiers = [ "reversed" ]; };

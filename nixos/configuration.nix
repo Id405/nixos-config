@@ -182,6 +182,8 @@
 
   programs.hyprland.enable = true;
 
+  security.polkit.enable = true;
+
   # Automatic login :DDDDD
   services.getty.autologinUser = "lily";
 
