@@ -1,3 +1,7 @@
-nix flake update
+#!/usr/bin/env fish
+sudo nix flake update
 sudo nixos-rebuild --flake . switch --install-bootloader
-home-manager -b backup --flake . switch
+and home-manager -b backup --flake . switch
+and git add .
+and git commit -m "`date`"
+and git push

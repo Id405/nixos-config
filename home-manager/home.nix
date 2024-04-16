@@ -4,7 +4,7 @@ let
   inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
   nixWallpaperFromScheme = import ./wallpaperclean.nix { inherit pkgs; };
   nixWallpaperFromSchemeDetailed = import ./wallpaper.nix { inherit pkgs; };
-  sioyek-developement = pkgs.qt6.callPackage ../customPackages/sioyek.nix {};
+  sioyek-developement = pkgs.qt6.callPackage ../customPackages/sioyek.nix { };
   summercamp-desaturated = {
     name = "Summercamp Desaturated";
     slug = "summercamp-desaturated";
@@ -57,6 +57,17 @@ in {
           mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
         });
       })
+
+      (final: prev:
+        let
+          nixpkgs-wine94 = import (prev.fetchFromGitHub {
+            owner = "NixOS";
+            repo = "nixpkgs";
+            rev =
+              "f60836eb3a850de917985029feaea7338f6fcb8a"; # wineWow64Packages.stable: 9.3 -> 9.4
+            sha256 = "BpQ0tkhz0Tbgz1rN05H6zhEvJgPvPbZy554gTVShn8M=";
+          }) { system = "x86_64-linux"; };
+        in { inherit (nixpkgs-wine94) yabridge yabridgectl; })
     ];
     # Configure your nixpkgs instance
     config = {
@@ -64,6 +75,7 @@ in {
       allowUnfree = true;
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       allowUnfreePredicate = (_: true);
+      permittedInsecurePackages = [ "electron-25.9.0" ];
     };
   };
 
@@ -100,6 +112,7 @@ in {
 
     # cli
     unzip
+    zip
     eza
     nixfmt
     rustup
@@ -114,18 +127,21 @@ in {
     slurp
     grim
     sway-contrib.grimshot
-    libreoffice
     swww
     texlive.combined.scheme-full
     inkscape
     blueberry
     blender
     gimp
-    libreoffice
-    musescore
     riseup-vpn
+    obsidian
+    mpv
+    feh
+    darktable
+    davinci-resolve
 
     # Audio Production
+    musescore
     reaper
     vital
     helm
@@ -136,6 +152,7 @@ in {
     dragonfly-reverb
     hybridreverb2
     aether-lv2
+    gnome.zenity
 
     # wine
     winetricks
@@ -153,114 +170,113 @@ in {
   wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
-                    # Monitors
-                    monitor=eDP-1,2256x1504@60,0x0,1.333333
-            	      monitor=,highres,auto,1
-            	
-                    # HiDPI XWayland
-                    exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
-                          
-                    # Programs
-                    bind=SUPER,Return,exec,${terminalEmulator}
-                    bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
-                    bind=SUPER,b,exec,grimshot copy area
-
-                    # Wm controls
-                    bind=SUPER,c,killactive
-                    bind=SUPER,bracketright,workspace,+1
-                    bind=SUPER,bracketleft,workspace,-1
-                    bind=SUPERSHIFT,bracketright,movetoworkspace,+1
-                    bind=SUPERSHIFT,bracketleft,movetoworkspace,-1
-                    bind=SUPER,f,togglefloating
-                    bind=SUPERSHIFT,f,fullscreen
-                    bind=SUPER,Tab,cyclenext
-                    bind=SUPERSHIFT,t,cyclenext,prev
-                    bind=SUPERSHIFT,q,exit
-
-                    # Mouse bindings
-                    bindm=SUPER,v,movewindow
-                    bindm=SUPERALT,v,resizewindow
-                    bindm=SUPER,mouse:272,movewindow
-                    bindm=SUPER,mouse:273,movewindow
-
-                    # status bar
-                    exec-once="waybar"
-
-                    # wallpaper
-                    exec-once=bash -c "swww init && sleep 0.1 && swww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
-                      nixWallpaperFromSchemeDetailed {
-                        scheme = config.colorscheme;
-                        width = 2256;
-                        height = 1504;
-                        logoScale = 5.0;
-                        fontName = "Inter";
-                        versionText = inputs.nixpkgs.lib.version;
-                      }
-                    } && sleep 10 && swww img --transition-type wipe --transition-angle 30 ${
-                      nixWallpaperFromScheme {
-                        scheme = config.colorscheme;
-                        width = 2256;
-                        height = 1504;
-                        logoScale = 5.0;
-                        fontName = "Inter";
-                        versionText = inputs.nixpkgs.lib.version;
-                      }
-                    }"
-
-                    # polkit
-                    exec-once="${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-
-                    # animations
-                    animation=global,1,3,default
+              # Monitors
+              monitor=eDP-1,2256x1504@60,0x0,1.333333
+      	      monitor=,highres,auto,1
+      	
+              # HiDPI XWayland
+              exec-once=xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2
                     
-                    bezier=easeInBack,0.36,0,0.66,-0.56
-                    bezier=easeOutBack,0.34,1.56,0.64,1
-                    bezier=easeInOutBack,0.68,-0.6,0.32,1.6
-                    bezier=easeInOut,0.45,0,0.55,1
+              # Programs
+              bind=SUPER,Return,exec,${terminalEmulator}
+              bind=SUPER,Space,exec,rofi -show drun -show-icons -icon-theme yaru
+              bind=SUPER,b,exec,grimshot copy area
 
-      	      animation=windowsIn,1,4,easeOutBack,popin
-      	      animation=windowsOut,1,4,easeInBack,popin
-      	      animation=windowsMove,1,4,easeInOutBack,popin
-      	      animation=fadeIn,0
-      	      animation=fadeOut,0
-      	      animation=fade,1,1,easeInOut
+              # Wm controls
+              bind=SUPER,c,killactive
+              bind=SUPER,bracketright,workspace,+1
+              bind=SUPER,bracketleft,workspace,-1
+              bind=SUPERSHIFT,bracketright,movetoworkspace,+1
+              bind=SUPERSHIFT,bracketleft,movetoworkspace,-1
+              bind=SUPER,f,togglefloating
+              bind=SUPERSHIFT,f,fullscreen
+              bind=SUPER,Tab,cyclenext
+              bind=SUPERSHIFT,t,cyclenext,prev
+              bind=SUPERSHIFT,q,exit
 
-                    general {
-                      border_size = 0
-                      col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
-                      col.active_border = rgba(${config.colorscheme.colors.base08}ff)
-                      gaps_in = 12
-                      gaps_out = 12
-                      cursor_inactive_timeout = 30
-                    }
-                          
-                    misc {
-                      disable_hyprland_logo = true
-                      enable_swallow = true
-                      swallow_regex = '^(kitty)$'
-                    }
+              # Mouse bindings
+              bindm=SUPER,v,movewindow
+              bindm=SUPERALT,v,resizewindow
+              bindm=SUPER,mouse:272,movewindow
+              bindm=SUPER,mouse:273,movewindow
 
-                    decoration {
-                      rounding = 12
-                      shadow_range = 12
-                      col.shadow = 0x22000000
-                      dim_inactive = true
-                      dim_strength = 0.05
-                    }
+              # status bar
+              exec-once="waybar"
 
-                    gestures {
-                      workspace_swipe = true
-                      workspace_swipe_invert = false
-                    }
+              # wallpaper
+              exec-once=bash -c "swww init && sleep 0.1 && swww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
+                nixWallpaperFromSchemeDetailed {
+                  scheme = config.colorscheme;
+                  width = 2256;
+                  height = 1504;
+                  logoScale = 5.0;
+                  fontName = "Inter";
+                  versionText = inputs.nixpkgs.lib.version;
+                }
+              } && sleep 10 && swww img --transition-type wipe --transition-angle 30 ${
+                nixWallpaperFromScheme {
+                  scheme = config.colorscheme;
+                  width = 2256;
+                  height = 1504;
+                  logoScale = 5.0;
+                  fontName = "Inter";
+                  versionText = inputs.nixpkgs.lib.version;
+                }
+              }"
 
-                    input {
-                      kb_layout = us
-                      kb_variant = colemak
+              # polkit
+              exec-once="${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
 
-                      touchpad {
-                        disable_while_typing=false
-                      }
-                    }
+              # animations
+
+              bezier = overshot, 0.05, 0.9, 0.1, 1.05
+              bezier = smoothOut, 0.36, 0, 0.66, -0.56
+              bezier = smoothIn, 0.25, 1, 0.5, 1
+
+              animation = windows, 1, 3, overshot, slide
+              animation = windowsOut, 1, 3, smoothOut, slide
+              animation = windowsMove, 1, 3, default
+              animation = border, 1, 3, default
+              animation = fade, 1, 3, smoothIn
+              animation = fadeDim, 1, 3, smoothIn
+              animation = workspaces, 1, 3, default
+              
+              general {
+                border_size = 0
+                col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
+                col.active_border = rgba(${config.colorscheme.colors.base08}ff)
+                gaps_in = 12
+                gaps_out = 12
+                cursor_inactive_timeout = 30
+              }
+                    
+              misc {
+                disable_hyprland_logo = true
+                enable_swallow = true
+                swallow_regex = '^(kitty)$'
+              }
+
+              decoration {
+                rounding = 12
+                shadow_range = 12
+                col.shadow = 0x22000000
+                dim_inactive = true
+                dim_strength = 0.05
+              }
+
+              gestures {
+                workspace_swipe = true
+                workspace_swipe_invert = false
+              }
+
+              input {
+                kb_layout = us
+                kb_variant = colemak
+
+                touchpad {
+                  disable_while_typing=false
+                }
+              }
     '';
   };
 
@@ -268,8 +284,10 @@ in {
   programs.waybar = {
     enable = true;
     settings.mainBar = {
-      layer = "top";
       position = "top";
+      exclusive = true;
+      mode = "dock";
+      layer = "top";
       height = 30;
       modules-center = [ "hyprland/workspaces" ];
       modules-right = [ "battery" "clock" ];
@@ -306,9 +324,9 @@ in {
     theme = let inherit (config.lib.formats.rasi) mkLiteral;
     in {
       "*" = {
-        background-color = mkLiteral "#${config.colorScheme.palette.base00}";
-        foreground-color = mkLiteral "#${config.colorScheme.palette.base07}";
-        text-color = mkLiteral "#${config.colorScheme.palette.base07}";
+        background-color = mkLiteral "#${config.colorScheme.colors.base00}";
+        foreground-color = mkLiteral "#${config.colorScheme.colors.base07}";
+        text-color = mkLiteral "#${config.colorScheme.colors.base07}";
         font = "Inter ${toString fontSize}";
         border-radius = mkLiteral "0.25em";
       };
@@ -319,8 +337,12 @@ in {
       };
 
       "window" = {
-        fullscreen = true;
+        #width = mkLiteral "20em";
+        #anchor = mkLiteral "north";
+        #location = mkLiteral "north";
         padding = mkLiteral "1em 75% 1em 1em";
+        fullscreen = true;
+        children = map mkLiteral [ "inputbar" "listview" ];
       };
 
       "prompt" = { enabled = false; };
@@ -328,7 +350,7 @@ in {
       "entry" = { placeholder = "launch..."; };
 
       "selected" = {
-        background-color = mkLiteral "#${config.colorScheme.palette.base08}";
+        background-color = mkLiteral "#${config.colorScheme.colors.base08}";
       };
 
       "element-icon" = {
@@ -410,6 +432,15 @@ in {
   xdg = {
     enable = true;
     mime.enable = true;
+    mimeApps = {
+      enable = true;
+      associations.added = {
+        "application/pdf" = [ "org.ahrm.sioyek.desktop" ];
+      };
+      defaultApplications = {
+        "application/pdf" = [ "org.ahrm.sioyek.desktop" ];
+      };
+    };
   };
 
   # Cursor
@@ -461,26 +492,26 @@ in {
   };
 
   # Zathura
-  programs.zathura = {
-    enable = true;
-    options = {
-      default-bg = "#${config.colorScheme.palette.base00}";
-      default-fg = "#${config.colorScheme.palette.base07}";
-      inputbar-bg = "#${config.colorScheme.palette.base00}";
-      inputbar-fg = "#${config.colorScheme.palette.base07}";
-      statusbar-bg = "#${config.colorScheme.palette.base00}";
-      statusbar-fg = "#${config.colorScheme.palette.base07}";
-      recolor-lightcolor = "#${config.colorScheme.palette.base00}";
-      recolor-darkcolor = "#${config.colorScheme.palette.base07}";
-      recolor = true;
-      guioptions = "none";
-    };
-  };
+  # programs.zathura = {
+  #   enable = true;
+  #   options = {
+  #     default-bg = "#${config.colorScheme.palette.base00}";
+  #     default-fg = "#${config.colorScheme.palette.base07}";
+  #     inputbar-bg = "#${config.colorScheme.palette.base00}";
+  #     inputbar-fg = "#${config.colorScheme.palette.base07}";
+  #     statusbar-bg = "#${config.colorScheme.palette.base00}";
+  #     statusbar-fg = "#${config.colorScheme.palette.base07}";
+  #     recolor-lightcolor = "#${config.colorScheme.palette.base00}";
+  #     recolor-darkcolor = "#${config.colorScheme.palette.base07}";
+  #     recolor = true;
+  #     guioptions = "none";
+  #   };
+  # };
 
   # sioyek
   programs.sioyek = {
     enable = true;
-    package = sioyek-developement;
+    #package = sioyek-developement;
     config = {
       "background_color" = "#${config.colorScheme.palette.base00}";
       "dark_mode_background_color" = "#${config.colorScheme.palette.base00}";
@@ -618,7 +649,7 @@ in {
         }
       ];
     };
-    plugins = with pkgs.kakounePlugins; [ kakboard kak-lsp kakoune-buffers ];
+    plugins = with pkgs.kakounePlugins; [ kakboard kakoune-lsp kakoune-buffers ];
     extraConfig = ''
       eval %sh{kak-lsp --kakoune -s $kak_session}
 
