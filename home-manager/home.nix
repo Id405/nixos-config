@@ -139,6 +139,7 @@ in {
     feh
     darktable
     davinci-resolve
+    mathematica
 
     # Audio Production
     musescore
