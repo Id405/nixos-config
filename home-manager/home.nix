@@ -64,8 +64,8 @@ in {
             owner = "NixOS";
             repo = "nixpkgs";
             rev =
-              "f60836eb3a850de917985029feaea7338f6fcb8a"; # wineWow64Packages.stable: 9.3 -> 9.4
-            sha256 = "BpQ0tkhz0Tbgz1rN05H6zhEvJgPvPbZy554gTVShn8M=";
+              "59322d8a3603ef35a0b5564b00109f4a6436923e"; # wineWow64Packages.unstable: 9.3 -> 9.4
+            sha256 = "Ln3mD5t96hz5MoDwa8NxHFq76B+V2BOppYf1tnwFBIc=";
           }) { system = "x86_64-linux"; };
         in { inherit (nixpkgs-wine94) yabridge yabridgectl; })
     ];
@@ -139,7 +139,7 @@ in {
     feh
     darktable
     davinci-resolve
-    mathematica
+    #mathematica
 
     # Audio Production
     musescore
@@ -650,7 +650,11 @@ in {
         }
       ];
     };
-    plugins = with pkgs.kakounePlugins; [ kakboard kakoune-lsp kakoune-buffers ];
+    plugins = with pkgs.kakounePlugins; [
+      kakboard
+      kakoune-lsp
+      kakoune-buffers
+    ];
     extraConfig = ''
       eval %sh{kak-lsp --kakoune -s $kak_session}
 
