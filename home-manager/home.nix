@@ -114,7 +114,7 @@ in {
     unzip
     zip
     eza
-    nixfmt
+    nixfmt-classic
     rustup
     libqalculate
     killall
@@ -139,7 +139,8 @@ in {
     feh
     darktable
     davinci-resolve
-    #mathematica
+    tor
+    libreoffice
 
     # Audio Production
     musescore
