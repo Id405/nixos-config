@@ -143,6 +143,7 @@ in {
     libreoffice
     mattermost-desktop
     networkmanagerapplet
+    chromium
 
     # Audio Production
     musescore
