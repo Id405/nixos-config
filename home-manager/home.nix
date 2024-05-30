@@ -144,6 +144,7 @@ in {
     mattermost-desktop
     networkmanagerapplet
     chromium
+    zoom
 
     # Audio Production
     musescore
@@ -248,8 +249,8 @@ in {
               
               general {
                 border_size = 0
-                col.inactive_border = rgba(${config.colorscheme.colors.base00}ff)
-                col.active_border = rgba(${config.colorscheme.colors.base08}ff)
+                col.inactive_border = rgba(${config.colorscheme.palette.base00}ff)
+                col.active_border = rgba(${config.colorscheme.palette.base08}ff)
                 gaps_in = 12
                 gaps_out = 12
               }
@@ -329,9 +330,9 @@ in {
     theme = let inherit (config.lib.formats.rasi) mkLiteral;
     in {
       "*" = {
-        background-color = mkLiteral "#${config.colorScheme.colors.base00}";
-        foreground-color = mkLiteral "#${config.colorScheme.colors.base07}";
-        text-color = mkLiteral "#${config.colorScheme.colors.base07}";
+        background-color = mkLiteral "#${config.colorScheme.palette.base00}";
+        foreground-color = mkLiteral "#${config.colorScheme.palette.base07}";
+        text-color = mkLiteral "#${config.colorScheme.palette.base07}";
         font = "Inter ${toString fontSize}";
         border-radius = mkLiteral "0.25em";
       };
@@ -355,7 +356,7 @@ in {
       "entry" = { placeholder = "launch..."; };
 
       "selected" = {
-        background-color = mkLiteral "#${config.colorScheme.colors.base08}";
+        background-color = mkLiteral "#${config.colorScheme.palette.base08}";
       };
 
       "element-icon" = {
