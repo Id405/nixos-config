@@ -1,5 +1,5 @@
 { config, pkgs, ... }: {
-  boot.initrd.availableKernelModules = [ "nvme" ];
+  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" ];
   isoImage.squashfsCompression = "gzip -Xcompression-level 1";
 
   services.xserver.xkb.layout = "us";
