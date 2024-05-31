@@ -12,5 +12,12 @@
   users.users.root.openssh.authorizedKeys.keys = [
     "SHA256:sIEkER7FxEM8Qs5aYGGUm6YzaywUnP7vF498mdrtbS8 lily@nixos"
   ];
+
+  environment.systemPackages = with pkgs; [
+    kakoune
+    git
+  ];
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 }
 
