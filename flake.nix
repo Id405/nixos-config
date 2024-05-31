@@ -23,7 +23,7 @@
         modules = [ ./nixos/configuration.nix ];
       };
       live = nixpkgs.lib.nixosSystem {
-        system = "x86_x64-linux";
+        system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           (nixpkgs
