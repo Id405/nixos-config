@@ -24,10 +24,11 @@
       };
       live = nixpkgs.lib.nixosSystem {
         system = "x86_x64-linux";
+        specialArgs = { inherit inputs; };
         modules = [
           (nixpkgs
             + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
-          ./nixos/configuration.nix
+          ./live/configuration.nix
         ];
       };
     };
@@ -40,16 +41,6 @@
           inherit inputs;
         }; # Pass flake inputs to our config
         modules = [ ./home-manager/home.nix ];
-      };
-      "lily@live" = home-manager.lib.homeManagerConfiguration {
-        pkgs =
-          nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-        extraSpecialArgs = {
-          inherit inputs;
-        }; # Pass flake inputs to our config
-        modules = [
-          ./home-manager/home.nix
-        ];
       };
     };
   };

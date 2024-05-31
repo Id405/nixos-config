@@ -9,7 +9,7 @@ let
     name = "Summercamp Desaturated";
     slug = "summercamp-desaturated";
     author = "zoe firi (modified by Id405";
-    colors = {
+    palette = {
       base00 = "1c1c1c";
       base01 = "282828";
       base02 = "3a3a3a";

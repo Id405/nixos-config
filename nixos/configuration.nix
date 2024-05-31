@@ -114,7 +114,7 @@
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
       efi.efiSysMountPoint = "/boot/efi";
-      timeout = 0;
+      timeout = lib.mkDefault 0; # mkDefault so live cd isn't affected
     };
     initrd = {
       systemd.enable = true;
