@@ -47,8 +47,7 @@
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
-      substituters =
-        [  "https://hyprland.cachix.org" ];
+      substituters = [ "https://hyprland.cachix.org" ];
       trusted-public-keys = [
         "webcord.cachix.org-1:l555jqOZGHd2C9+vS8ccdh8FhqnGe8L78QrHNn+EFEs="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
@@ -187,6 +186,12 @@
   programs.hyprland.enable = true;
 
   security.polkit.enable = true;
+
+  services.pcscd.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
 
   # Automatic login :DDDDD
   services.getty.autologinUser = "lily";
