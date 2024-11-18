@@ -1,10 +1,23 @@
-{ inputs, lib, config, pkgs, ... }: {
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+let
+  hibernateEnvironment = {
+    HIBERNATE_SECONDS = "10";
+    HIBERNATE_LOCK = "/var/run/autohibernate.lock";
+  };
+in
+{
   imports = [
     # If you want to use modules from other flakes (such as nixos-hardware):
     # inputs.hardware.nixosModules.common-cpu-amd
     # inputs.hardware.nixosModules.common-ssd
     inputs.musnix.nixosModules.musnix
-
+    inputs.lix-module.nixosModules.default
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
 
@@ -40,24 +53,42 @@
 
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
-      config.nix.registry;
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
     # Enable the good shit
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
-      substituters = [ "https://hyprland.cachix.org" ];
-      trusted-public-keys = [
-        "webcord.cachix.org-1:l555jqOZGHd2C9+vS8ccdh8FhqnGe8L78QrHNn+EFEs="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      ];
     };
 
     gc = {
       automatic = true;
       options = "--delete-older-than 7d";
     };
+
+    distributedBuilds = true;
+    buildMachines = [
+      {
+        hostName = "builder";
+        system = "x86_64-linux";
+        maxJobs = 16;
+        speedFactor = 2;
+        supportedFeatures = [
+          "nixos-test"
+          "benchmark"
+          "big-parallel"
+          "kvm"
+        ];
+        mandatoryFeatures = [ ];
+      }
+    ];
+    # buildMachines = [
+    #   { hostName = "eu.nixbuild.net";
+    #     system = "x86_64-linux";
+    #     maxJobs = 100;
+    #     supportedFeatures = [ "benchmark" "big-parallel" ];
+    #   }
+    # ];
   };
 
   # Filesystem stuff [*_*]
@@ -79,7 +110,6 @@
   services.printing.enable = true;
 
   # Sound 0^0 <--- its like a headphones or maybe an owl face
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   hardware.bluetooth.enable = true; # enable bluetooth
   security.rtkit.enable = true;
@@ -107,6 +137,20 @@
   networking.networkmanager.enable = true;
   networking.firewall.enable = false;
 
+  services.avahi = {
+    nssmdns = true;
+    enable = true;
+    ipv4 = true;
+    ipv6 = true;
+    publish = {
+      enable = true;
+      addresses = true;
+      workstation = true;
+    };
+  };
+
+  services.tailscale.enable = true;
+
   # Bootloader and kernel :0
   boot = {
     loader = {
@@ -120,7 +164,11 @@
       verbose = false;
     };
     consoleLogLevel = 0;
-    kernelParams = [ "quiet" "udev.log_level=3" ];
+    kernelParams = [
+      "quiet"
+      "udev.log_level=3"
+      "mem_sleep_default=deep" # sleep to ram instead of s2idle
+    ];
     kernelPackages = pkgs.linuxPackages_latest;
     plymouth.enable = true;
   };
@@ -150,6 +198,42 @@
     };
   };
 
+  systemd.services."awake-after-suspend-for-a-time" = {
+    description = "Sets up the suspend so that it'll wake for hibernation only if not on AC power";
+    wantedBy = [ "suspend.target" ];
+    before = [ "systemd-suspend.service" ];
+    environment = hibernateEnvironment;
+    script = ''
+      if [ $(cat /sys/class/power_supply/AC/online) -eq 0 ]; then
+        curtime=$(date +%s)
+        echo "$curtime $1" >> /tmp/autohibernate.log
+        echo "$curtime" > $HIBERNATE_LOCK
+        ${pkgs.utillinux}/bin/rtcwake -m no -s $HIBERNATE_SECONDS
+      else
+        echo "System is on AC power, skipping wake-up scheduling for hibernation." >> /tmp/autohibernate.log
+      fi
+    '';
+    serviceConfig.Type = "simple";
+  };
+
+  systemd.services."hibernate-after-recovery" = {
+    description = "Hibernates after a suspend recovery due to timeout";
+    wantedBy = [ "suspend.target" ];
+    after = [ "systemd-suspend.service" ];
+    environment = hibernateEnvironment;
+    script = ''
+      curtime=$(date +%s)
+      sustime=$(cat $HIBERNATE_LOCK)
+      rm $HIBERNATE_LOCK
+      if [ $(($curtime - $sustime)) -ge $HIBERNATE_SECONDS ] ; then
+        systemctl hibernate
+      else
+        ${pkgs.utillinux}/bin/rtcwake -m no -s 1
+      fi
+    '';
+    serviceConfig.Type = "simple";
+  };
+
   # Backlight
   programs.light.enable = true;
   services.actkbd = {
@@ -169,14 +253,24 @@
   };
 
   # Silent getty
-  services.getty.extraArgs =
-    [ "--skip-login" "--nonewline" "--noissue" "--noclear" ];
+  services.getty.extraArgs = [
+    "--skip-login"
+    "--nonewline"
+    "--noissue"
+    "--noclear"
+  ];
 
   # Users \O/ \O/ \O/ <--- imagine these as lots of people
   users.users = {
     lily = {
       isNormalUser = true;
-      extraGroups = [ "networkmanager" "wheel" "audio" ];
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "audio"
+        "input"
+        "dialout"
+      ];
       shell = pkgs.fish;
     };
   };
