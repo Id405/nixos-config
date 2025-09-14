@@ -34,14 +34,14 @@ let
   fontSize = 10;
   fontSizeSmall = 9;
   uiFont = "Inter";
-  programmingFont = "Fira Code";
+  programmingFont = "FiraCode Nerd Font";
   terminalEmulator = "kitty";
 in
 {
   imports = [
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     inputs.nix-colors.homeManagerModule
-    inputs.lix-module.nixosModules.default
+    # inputs.lix-module.nixosModules.default
 
     # You can also split up your configuration and import pieces of it here:
     # ./nvim.nix
@@ -82,7 +82,7 @@ in
       allowUnfree = true;
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       allowUnfreePredicate = (_: true);
-      permittedInsecurePackages = [ "electron-28.3.3" ];
+      permittedInsecurePackages = [ "electron-28.3.3" "python-2.7.18.8-env" "python-2.7.18.8"   ];
     };
   };
 
@@ -90,7 +90,7 @@ in
     username = "lily";
     homeDirectory = "/home/lily";
     sessionVariables = {
-      EDITOR = "hx";
+      EDITOR = "vi";
       NIXOS_OZONE_WL = "1";
     };
   };
@@ -101,24 +101,9 @@ in
   programs.home-manager.enable = true;
   programs.git.enable = true;
   home.packages = with pkgs; [
-    # Fonts
-    pkgs.fira-code
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
-    mplus-outline-fonts.githubRelease
-    nerdfonts
-    inter
-    scientifica
-    cozette
-
     # Daemons
     wl-clipboard
     polkit_gnome
-    xwaylandvideobridge
     leptosfmt
     python312Packages.python-lsp-server
 
@@ -134,19 +119,29 @@ in
     gcc
     pre-commit
     wasm-pack
-    nodePackages.npm
-    nodePackages.typescript-language-server
+    #nodePackages.npm
+    #nodePackages.typescript-language-server
     nodejs
     trunk
     dart-sass
     exiv2
     black
-    python3
+    (pkgs.python3.withPackages (python-pkgs: [
+      python-pkgs.numpy
+      python-pkgs.transformers
+      python-pkgs.torch
+      python-pkgs.accelerate
+      python-pkgs.pyaudio
+    ]))
     pylint
     rclone
     typst
     zola
     docker-compose
+    pandoc
+    smassh
+    flatpak
+    python3Packages.virtualenv
 
     # gui
     pavucontrol
@@ -163,7 +158,7 @@ in
     mpv
     feh
     prismlauncher
-    darktable
+    # darktable
     # mathematica
     scrcpy
     wineWowPackages.waylandFull
@@ -173,26 +168,41 @@ in
     ugs
     fontforge-gtk
     inkscape
+    system-config-printer
+    inputs.zen-browser.packages."${system}".default
+    kicad
+    networkmanagerapplet
+    slipstream
+    shotcut
+    vial
+    #inputs.ftlman.packages."${system}".default
+    easyeffects
+    gamescope
+    protontricks
+    nm-applet
 
     # Audio Production
     reaper
     vital
     # helm
     lsp-plugins
-    yabridge
-    yabridgectl
+    #yabridge
+    #yabridgectl
     mooSpace
     dragonfly-reverb
     hybridreverb2
     aether-lv2
     zenity
+    musescore
+    yabridgectl
+    yabridge
 
     # Dependencies for unmanaged programs
     zulu
     openal
     alsa-oss
   ];
-
+  
   # Color scheme
   colorScheme = summercamp-desaturated;
   # Hyprland
@@ -237,6 +247,10 @@ in
                 name = glorious-model-o
                 sensitivity = -2
               }
+
+	      debug {
+		disable_logs = false
+	      }
 
               # wallpaper
               exec-once=bash -c "swww init && sleep 0.1 && swww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
@@ -308,12 +322,29 @@ in
 
               input {
                 kb_layout = us
-                kb_variant = colemak
+                #kb_variant = colemak
 
                 touchpad {
                   disable_while_typing=false
                 }
               }
+
+	    # Rusty Retirement Game Overlay
+	    windowrulev2 = tag +rtr, title:(Rusty's Retirement)
+	    windowrulev2 = float, tag:rtr
+
+	    # Remove this if you don't want rtr to appear in all workspaces
+	    windowrulev2 = pin, tag:rtr
+
+	    windowrulev2 = size 100% 411, tag:rtr
+
+	    # Move rtr to buttom of the screen
+	    windowrulev2 = move 0 715, tag:rtr
+
+	    windowrulev2 = noblur, tag:rtr
+	    windowrulev2 = noshadow, tag:rtr
+	    windowrulev2 = noborder, tag:rtr
+	    windowrulev2 = opacity 1 override, tag:rtr
     '';
   };
 
@@ -331,16 +362,33 @@ in
         "battery"
         "clock"
       ];
-      modules-left = [ "tray" ];
 
       "hyprland/workspaces" = {
         all-outputs = true;
-        format = "{name}";
+        format = "{name}:  {windows}";
+	format-window-seperator = " ";
+	window-rewrite-default = "";
+	window-rewrite = {
+	   "title<.*youtube.*>" = "";
+	   "class<firefox>" = "";
+	   "class<firefox> title<.*github.*>" = ""; 
+	   "kitty" = ""; 
+	   "code" = "󰨞";
+	   "vesktop" = "󰙯";
+	   "steam" = "";
+	   "blender" = "󰂫";
+	};
       };
 
       "clock" = {
-        format = "{:%I:%M %p}";
+	format = "{:%I:%M %p}";
       };
+
+      "pulseaudio/slider" = {
+	min = 0;
+	max = 100;
+	orientation = "horizontal";
+      }; 
     };
     style = ''
       * {
@@ -357,6 +405,12 @@ in
       #workspaces button.active {
         color: #fff;
       }
+
+      #pulseaudio-slider trough, #backlight-slider trough {
+	min-height: 10px;
+	min-width: 80px;
+      }
+
     '';
   };
 
@@ -416,6 +470,8 @@ in
 
   # mako
   services.mako.enable = true;
+
+  services.syncthing.enable = true;
 
   # Fonts
   fonts.fontconfig.enable = true;
@@ -574,19 +630,6 @@ in
     };
   };
 
-  # Discocss
-  programs.discocss = {
-    enable = true;
-    css = ''
-      .theme-dark {
-        --saturation-factor: 0;
-        --background-primary: ${config.colorScheme.palette.base00};
-        --background-primary-alt: ${config.colorScheme.palette.base01};
-        --background-secondary: ${config.colorScheme.palette.base00};
-        --background-secondary-alt: ${config.colorScheme.palette.base01};
-      }
-    '';
-  };
 
   # Zathura
   # programs.zathura = {
@@ -645,14 +688,14 @@ in
   };
 
   # Vscode
-  programs.vscode = {
-    enable = true;
-    extensions = [ pkgs.vscode-extensions.james-yu.latex-workshop ];
-    userSettings = {
-      "keyboard.dispatch" = "keyCode";
-      "window.menuBarVisibility" = "hidden";
-    };
-  };
+  #programs.vscode = {
+  #  enable = true;
+  #  extensions = [ pkgs.vscode-extensions.james-yu.latex-workshop ];
+  #  userSettings = {
+  #    "keyboard.dispatch" = "keyCode";
+  #    "window.menuBarVisibility" = "hidden";
+  #  };
+  #};
 
   # zoxide
   programs.zoxide = {
@@ -763,578 +806,278 @@ in
   #   '';
   # };
 
-  # Helix
-  programs.helix = {
-    enable = true;
-
-    languages = {
-      language-server = {
-        rust-analyzer = with pkgs.rust-analyzer; {
-          command = "${pkgs.rust-analyzer}/bin/rust-analyzer";
-          config.rust-analyzer = {
-            cargo.loadOutDirsFromCheck = true;
-            checkOnSave.command = "clippy";
-            procMacro.enable = true;
-            lens = {
-              references = true;
-              methodReferences = true;
-            };
-            completion.autoimport.enable = true;
-            experimental.procAttrMacros = true;
-          };
-        };
-
-        nil = with pkgs.nil; {
-          command = "${pkgs.nil}/bin/nil";
-        };
-
-        texlab = with pkgs.texlab; {
-          command = "${pkgs.texlab}/bin/texlab";
-        };
-      };
-
-      language = [
-        {
-          name = "rust";
-          language-servers = [ "rust-analyzer" ];
-          auto-format = true;
-          formatter = with pkgs.leptosfmt; {
-            command = "${pkgs.leptosfmt}/bin/leptosfmt";
-            args = [
-              "--stdin"
-              "--rustfmt"
-            ];
-          };
-        }
-
-        {
-          name = "nix";
-          language-servers = [ "nil" ];
-          auto-format = true;
-          formatter = with pkgs.nixfmt-rfc-style; {
-            command = "${pkgs.nixfmt-rfc-style}/bin/nixfmt";
-          };
-        }
-
-        {
-          name = "javascript";
-          auto-format = true;
-          formatter = with pkgs.nodePackages.prettier; {
-            command = "${pkgs.nodePackages.prettier}/bin/prettier";
-            args = [
-              "--parser"
-              "typescript"
-            ];
-          };
-        }
-
-        {
-          name = "html";
-          auto-format = true;
-          formatter = with pkgs.nodePackages.prettier; {
-            command = "${pkgs.nodePackages.prettier}/bin/prettier";
-            args = [
-              "--parser"
-              "html"
-            ];
-          };
-        }
-
-        {
-          name = "css";
-          auto-format = true;
-          formatter = with pkgs.nodePackages.prettier; {
-            command = "${pkgs.nodePackages.prettier}/bin/prettier";
-            args = [
-              "--parser"
-              "css"
-            ];
-          };
-        }
-
-        {
-          name = "latex";
-          language-servers = [ "texlab" ];
-          auto-format = true;
-          formatter = with pkgs.nodePackages.prettier; {
-            command = "${pkgs.nodePackages.prettier}/bin/prettier";
-            args = [
-              "--parser"
-              "latex"
-            ];
-          };
-        }
-      ];
-    };
-    settings = {
-      theme = "system";
-      editor = {
-        cursor-shape = {
-          normal = "underline";
-          insert = "bar";
-          select = "block";
-        };
-        statusline = {
-          left = [
-            "version-control"
-            "spinner"
-          ];
-          center = [
-            "file-name"
-            "read-only-indicator"
-            "file-modification-indicator"
-          ];
-          right = [
-            "diagnostics"
-            "register"
-            "file-encoding"
-          ];
-        };
-        auto-format = true;
-        lsp = {
-          display-messages = true;
-          display-inlay-hints = true;
-        };
-      };
-    };
-    themes = {
-      system =
-        let
-          transparent = "none";
-          gray = "#${config.colorScheme.palette.base05}";
-          dark-gray = "#${config.colorScheme.palette.base00}";
-          white = "#${config.colorScheme.palette.base07}";
-          black = "#${config.colorScheme.palette.base00}";
-          red = "#${config.colorScheme.palette.base08}";
-          green = "#${config.colorScheme.palette.base0B}";
-          yellow = "#${config.colorScheme.palette.base0A}";
-          orange = "#${config.colorScheme.palette.base09}";
-          blue = "#${config.colorScheme.palette.base0D}";
-          magenta = "#${config.colorScheme.palette.base0E}";
-          cyan = "#${config.colorScheme.palette.base0C}";
-        in
-        {
-          "ui.menu" = transparent;
-          "ui.menu.selected" = {
-            modifiers = [ "reversed" ];
-          };
-          "ui.linenr" = {
-            fg = gray;
-            bg = dark-gray;
-          };
-          "ui.popup" = {
-            modifiers = [ "reversed" ];
-          };
-          "ui.linenr.selected" = {
-            fg = white;
-            bg = black;
-            modifiers = [ "bold" ];
-          };
-          "ui.selection" = {
-            fg = black;
-            bg = blue;
-          };
-          "ui.selection.primary" = {
-            modifiers = [ "reversed" ];
-          };
-          "comment" = {
-            fg = gray;
-          };
-          "ui.statusline" = {
-            fg = white;
-            bg = dark-gray;
-          };
-          "ui.statusline.inactive" = {
-            fg = dark-gray;
-            bg = white;
-          };
-          "ui.help" = {
-            fg = dark-gray;
-            bg = white;
-          };
-          "ui.cursor" = {
-            modifiers = [ "reversed" ];
-          };
-          "variable" = red;
-          "variable.builtin" = orange;
-          "constant.numeric" = orange;
-          "constant" = orange;
-          "attributes" = yellow;
-          "type" = yellow;
-          "ui.cursor.match" = {
-            fg = yellow;
-            modifiers = [ "underlined" ];
-          };
-          "string" = green;
-          "variable.other.member" = red;
-          "constant.character.escape" = cyan;
-          "function" = blue;
-          "constructor" = blue;
-          "special" = blue;
-          "keyword" = magenta;
-          "label" = magenta;
-          "namespace" = blue;
-          "diff.plus" = green;
-          "diff.delta" = yellow;
-          "diff.minus" = red;
-          "diagnostic" = {
-            modifiers = [ "underlined" ];
-          };
-          "ui.gutter" = {
-            bg = black;
-          };
-          "info" = blue;
-          "hint" = dark-gray;
-          "debug" = dark-gray;
-          "warning" = yellow;
-          "error" = red;
-        };
-    };
-  };
-
-  # Espanso
-
-  services.espanso = {
-    enable = true;
-    package = pkgs.espanso-wayland;
-    configs = {
-      default = {
-        toggle_key = "LEFT_META";
-        keyboard_layout = {
-          layout = "us";
-          variant = "colemak";
-        };
-      };
-
-      kitty = {
-        filter_title = "kitty";
-        backend = "clipboard";
-        paste_shortcut = "CTRL+SHIFT+V";
-        pre_paste_delay = 500;
-      };
-    };
-
-    matches = {
-      base = {
-        matches = [
-          {
-            trigger = ":date";
-            replace = "{{currentdate}}";
-          }
-
-          {
-            trigger = ":Delta";
-            replace = "Δ";
-          }
-
-          {
-            trigger = ":Theta";
-            replace = "ϴ";
-          }
-
-          {
-            trigger = ":Sigma";
-            replace = "Σ";
-          }
-
-          {
-            trigger = ":Nabla";
-            replace = "∇";
-          }
-
-          {
-            trigger = ":Phi";
-            replace = "Φ";
-          }
-
-          {
-            trigger = ":Omega";
-            replace = "Ω";
-          }
-
-          {
-            trigger = ":Pi";
-            replace = "Π";
-          }
-
-          {
-            trigger = ":alpha";
-            replace = "α";
-          }
-
-          {
-            trigger = ":beta";
-            replace = "β";
-          }
-
-          {
-            trigger = ":gamma";
-            replace = "γ";
-          }
-
-          {
-            trigger = ":delta";
-            replace = "δ";
-          }
-
-          {
-            trigger = ":epsilon";
-            replace = "ε";
-          }
-
-          {
-            trigger = ":theta";
-            replace = "θ";
-          }
-
-          {
-            trigger = ":lambda";
-            replace = "λ";
-          }
-
-          {
-            trigger = ":mu";
-            replace = "μ";
-          }
-
-          {
-            trigger = ":pi";
-            replace = "π";
-          }
-
-          {
-            trigger = ":sigma";
-            replace = "σ";
-          }
-
-          {
-            trigger = ":partial";
-            replace = "∂";
-          }
-
-          {
-            trigger = ":in";
-            replace = "ϵ";
-          }
-
-          {
-            trigger = ":phi";
-            replace = "ϕ";
-          }
-
-          {
-            trigger = ":real";
-            replace = "ℝ";
-          }
-
-          {
-            trigger = ":rational";
-            replace = "ℚ";
-          }
-
-          {
-            trigger = ":natural";
-            replace = "ℕ";
-          }
-
-          {
-            trigger = ":integer";
-            replace = "ℤ";
-          }
-
-          {
-            trigger = ":^0";
-            replace = "⁰";
-          }
-
-          {
-            trigger = ":^1";
-            replace = "¹";
-          }
-
-          {
-            trigger = ":^2";
-            replace = "²";
-          }
-
-          {
-            trigger = ":^3";
-            replace = "³";
-          }
-
-          {
-            trigger = ":^4";
-            replace = "⁴";
-          }
-
-          {
-            trigger = ":^5";
-            replace = "⁵";
-          }
-
-          {
-            trigger = ":^6";
-            replace = "⁶";
-          }
-
-          {
-            trigger = ":^7";
-            replace = "⁷";
-          }
-
-          {
-            trigger = ":^8";
-            replace = "⁸";
-          }
-
-          {
-            trigger = ":^9";
-            replace = "⁹";
-          }
-
-          {
-            trigger = ":^n";
-            replace = "ⁿ";
-          }
-
-          {
-            trigger = ":^i";
-            replace = "ⁱ";
-          }
-
-          {
-            trigger = ":^x";
-            replace = "ˣ";
-          }
-
-          {
-            trigger = ":^-";
-            replace = "⁻";
-          }
-
-          {
-            trigger = ":^+";
-            replace = "⁺";
-          }
-
-          {
-            trigger = ":^(";
-            replace = "⁽";
-          }
-
-          {
-            trigger = ":^)";
-            replace = "⁾";
-          }
-
-          {
-            trigger = ":_0";
-            replace = "₀";
-          }
-
-          {
-            trigger = ":_1";
-            replace = "₁";
-          }
-
-          {
-            trigger = ":_2";
-            replace = "₂";
-          }
-
-          {
-            trigger = ":_3";
-            replace = "₃";
-          }
-
-          {
-            trigger = ":_4";
-            replace = "₄";
-          }
-
-          {
-            trigger = ":_5";
-            replace = "₅";
-          }
-
-          {
-            trigger = ":_6";
-            replace = "₆";
-          }
-
-          {
-            trigger = ":_7";
-            replace = "₇";
-          }
-
-          {
-            trigger = ":_8";
-            replace = "₈";
-          }
-
-          {
-            trigger = ":_9";
-            replace = "₉";
-          }
-
-          {
-            trigger = ":_+";
-            replace = "₊";
-          }
-
-          {
-            trigger = ":_-";
-            replace = "₋";
-          }
-
-          {
-            trigger = ":_(";
-            replace = "₍";
-          }
-
-          {
-            trigger = ":_)";
-            replace = "₎";
-          }
-
-          {
-            trigger = ":_n";
-            replace = "ₙ";
-          }
-
-          {
-            trigger = ":_m";
-            replace = "ₘ";
-          }
-
-          {
-            trigger = ":_k";
-            replace = "ₖ";
-          }
-
-          {
-            trigger = ":/";
-            replace = "⁄";
-          }
-
-          {
-            trigger = ":cdots";
-            replace = "⋯";
-          }
-
-          {
-            trigger = "...";
-            replace = "…";
-          }
-
-          {
-            trigger = "=>";
-            replace = "⇒";
-          }
-        ];
-      };
-    };
-  };
+  # espanso
+  # services.espanso = {
+  #   enable = true;
+  #   package = pkgs.espanso-wayland;
+  #   configs = {
+  #     default = {
+  #       toggle_key = "LEFT_META";
+  #       keyboard_layout = {
+  #         layout = "us";
+  #         variant = "colemak";
+  #       };
+  #     };
+  #   };
+  #
+  #         {
+  #           trigger = ":epsilon";
+  #           replace = "ε";
+  #         }
+  #
+  #         {
+  #           trigger = ":theta";
+  #           replace = "θ";
+  #         }
+  #
+  #         {
+  #           trigger = ":lambda";
+  #           replace = "λ";
+  #         }
+  #
+  #         {
+  #           trigger = ":mu";
+  #           replace = "μ";
+  #         }
+  #
+  #         {
+  #           trigger = ":pi";
+  #           replace = "π";
+  #         }
+  #
+  #         {
+  #           trigger = ":sigma";
+  #           replace = "σ";
+  #         }
+  #
+  #         {
+  #           trigger = ":partial";
+  #           replace = "∂";
+  #         }
+  #
+  #         {
+  #           trigger = ":in";
+  #           replace = "ϵ";
+  #         }
+  #
+  #         {
+  #           trigger = ":phi";
+  #           replace = "ϕ";
+  #         }
+  #
+  #         {
+  #           trigger = ":real";
+  #           replace = "ℝ";
+  #         }
+  #
+  #         {
+  #           trigger = ":rational";
+  #           replace = "ℚ";
+  #         }
+  #
+  #         {
+  #           trigger = ":natural";
+  #           replace = "ℕ";
+  #         }
+  #
+  #         {
+  #           trigger = ":integer";
+  #           replace = "ℤ";
+  #         }
+  #
+  #         {
+  #           trigger = ":^0";
+  #           replace = "⁰";
+  #         }
+  #
+  #         {
+  #           trigger = ":^1";
+  #           replace = "¹";
+  #         }
+  #
+  #         {
+  #           trigger = ":^2";
+  #           replace = "²";
+  #         }
+  #
+  #         {
+  #           trigger = ":^3";
+  #           replace = "³";
+  #         }
+  #
+  #         {
+  #           trigger = ":^4";
+  #           replace = "⁴";
+  #         }
+  #
+  #         {
+  #           trigger = ":^5";
+  #           replace = "⁵";
+  #         }
+  #
+  #         {
+  #           trigger = ":^6";
+  #           replace = "⁶";
+  #         }
+  #
+  #         {
+  #           trigger = ":^7";
+  #           replace = "⁷";
+  #         }
+  #
+  #         {
+  #           trigger = ":^8";
+  #           replace = "⁸";
+  #         }
+  #
+  #         {
+  #           trigger = ":^9";
+  #           replace = "⁹";
+  #         }
+  #
+  #         {
+  #           trigger = ":^n";
+  #           replace = "ⁿ";
+  #         }
+  #
+  #         {
+  #           trigger = ":^i";
+  #           replace = "ⁱ";
+  #         }
+  #
+  #         {
+  #           trigger = ":^x";
+  #           replace = "ˣ";
+  #         }
+  #
+  #         {
+  #           trigger = ":^-";
+  #           replace = "⁻";
+  #         }
+  #
+  #         {
+  #           trigger = ":^+";
+  #           replace = "⁺";
+  #         }
+  #
+  #         {
+  #           trigger = ":^(";
+  #           replace = "⁽";
+  #         }
+  #
+  #         {
+  #           trigger = ":^)";
+  #           replace = "⁾";
+  #         }
+  #
+  #         {
+  #           trigger = ":_0";
+  #           replace = "₀";
+  #         }
+  #
+  #         {
+  #           trigger = ":_1";
+  #           replace = "₁";
+  #         }
+  #
+  #         {
+  #           trigger = ":_2";
+  #           replace = "₂";
+  #         }
+  #
+  #         {
+  #           trigger = ":_3";
+  #           replace = "₃";
+  #         }
+  #
+  #         {
+  #           trigger = ":_4";
+  #           replace = "₄";
+  #         }
+  #
+  #         {
+  #           trigger = ":_5";
+  #           replace = "₅";
+  #         }
+  #
+  #         {
+  #           trigger = ":_6";
+  #           replace = "₆";
+  #         }
+  #
+  #         {
+  #           trigger = ":_7";
+  #           replace = "₇";
+  #         }
+  #
+  #         {
+  #           trigger = ":_8";
+  #           replace = "₈";
+  #         }
+  #
+  #         {
+  #           trigger = ":_9";
+  #           replace = "₉";
+  #         }
+  #
+  #         {
+  #           trigger = ":_+";
+  #           replace = "₊";
+  #         }
+  #
+  #         {
+  #           trigger = ":_-";
+  #           replace = "₋";
+  #         }
+  #
+  #         {
+  #           trigger = ":_(";
+  #           replace = "₍";
+  #         }
+  #
+  #         {
+  #           trigger = ":_)";
+  #           replace = "₎";
+  #         }
+  #
+  #         {
+  #           trigger = ":_n";
+  #           replace = "ₙ";
+  #         }
+  #
+  #         {
+  #           trigger = ":_m";
+  #           replace = "ₘ";
+  #         }
+  #
+  #         {
+  #           trigger = ":_k";
+  #           replace = "ₖ";
+  #         }
+  #
+  #         {
+  #           trigger = ":/";
+  #           replace = "⁄";
+  #         }
+  #
+  #         {
+  #           trigger = ":cdots";
+  #           replace = "⋯";
+  #         }
+  #
+  #         {
+  #           trigger = "...";
+  #           replace = "…";
+  #         }
+  #
+  #         {
+  #           trigger = "=>";
+  #           replace = "⇒";
+  #         }
+  #       ];
+  #     };
+    # };
+  # };
 
   programs.neovim = {
     enable = true;
@@ -1345,7 +1088,6 @@ in
     plugins = with pkgs.vimPlugins; [
       nvim-lspconfig
       lazy-lsp-nvim
-      lsp-zero-nvim
       nvim-treesitter.withAllGrammars
       plenary-nvim
       nvim-cmp
@@ -1354,37 +1096,266 @@ in
       nvim-treesitter-textobjects
       targets-vim
       nvim-surround
-      neo-tree-nvim
       telescope-nvim
       telescope-fzf-native-nvim
       telescope-file-browser-nvim
       vim-fugitive
       vim-repeat
       vimtex
+      base16-nvim
+      which-key-nvim
+      dropbar-nvim
+      lualine-nvim
+      noice-nvim
+      nui-nvim
+      typst-preview-nvim
+      tiny-inline-diagnostic-nvim
+      comment-nvim
     ];
 
     extraLuaConfig = ''
-      local lsp_zero = require("lsp-zero")
+    require("lazy-lsp").setup {
+      excluded_servers = {
+	excluded_servers = {
+	  "ccls",                            -- prefer clangd
+	  "denols",                          -- prefer eslint and ts_ls
+	  "docker_compose_language_service", -- yamlls should be enough?
+	  "flow",                            -- prefer eslint and ts_ls
+	  "quick_lint_js",                   -- prefer eslint and ts_ls
+	  "scry",                            -- archived on Jun 1, 2023
+	  "tailwindcss",                     -- associates with too many filetypes
+	  "biome",                           -- not mature enough to be default
+	},
+      },
+      preferred_servers = {
+	markdown = {},
+	python = { "pyright" },
+	nix = { "nil" },
+      },
+      configs = {
+	lua_ls = {
+	  settings = {
+	    Lua = {
+	      diagnostics = {
+		-- Get the language server to recognize the `vim` global
+		globals = { "vim" },
+	      },
+	    },
+	  },
+	},
+      },
+    }
 
-       lsp_zero.on_attach(function(_, bufnr)
-         -- see :help lsp-zero-keybindings to learn the available actions
-         lsp_zero.default_keymaps({
-           buffer = bufnr,
-           preserve_mappings = false
-         })
-       end)
+    -- Reserve a space in the gutter
+    vim.opt.signcolumn = 'yes'
 
-       require("lazy-lsp").setup {
-         excluded_servers = {
-           "tabby_ml",
-           "markdown_oxide",
-           "pico8_ls",
-           "css_variables",
-           "delphi_ls"
-         },
-         prefer_local = false,
-       }
+    -- Add cmp_nvim_lsp capabilities settings to lspconfig
+    -- This should be executed before you configure any language server
+    local lspconfig_defaults = require('lspconfig').util.default_config
+    lspconfig_defaults.capabilities = vim.tbl_deep_extend(
+      'force',
+      lspconfig_defaults.capabilities,
+      require('cmp_nvim_lsp').default_capabilities()
+    )
+
+    -- This is where you enable features that only work
+    -- if there is a language server active in the file
+    vim.api.nvim_create_autocmd('LspAttach', {
+      desc = 'LSP actions',
+      callback = function(event)
+	local opts = {buffer = event.buf}
+
+	vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
+	vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+	vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
+	vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
+	vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
+	vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
+	vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
+	vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
+	vim.keymap.set({'n', 'x'}, '<F3>', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
+	vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+      end,
+    })
+
+    local cmp = require('cmp')
+
+    cmp.setup({
+      sources = {
+	{name = 'nvim_lsp'},
+      },
+      snippet = {
+	expand = function(args)
+	  -- You need Neovim v0.10 to use vim.snippet
+	  vim.snippet.expand(args.body)
+	end,
+      },
+      mapping = cmp.mapping.preset.insert({}),
+    }) 
+
+    require('base16-colorscheme').setup({
+      base00 = '#${config.colorScheme.palette.base00}',
+      base01 = '#${config.colorScheme.palette.base01}',
+      base02 = '#${config.colorScheme.palette.base02}',
+      base03 = '#${config.colorScheme.palette.base03}',
+      base04 = '#${config.colorScheme.palette.base04}',
+      base05 = '#${config.colorScheme.palette.base05}',
+      base06 = '#${config.colorScheme.palette.base06}',
+      base07 = '#${config.colorScheme.palette.base07}',
+      base08 = '#${config.colorScheme.palette.base08}',
+      base09 = '#${config.colorScheme.palette.base09}',
+      base0A = '#${config.colorScheme.palette.base0A}',
+      base0B = '#${config.colorScheme.palette.base0B}',
+      base0C = '#${config.colorScheme.palette.base0C}', 
+      base0D = '#${config.colorScheme.palette.base0D}',
+      base0E = '#${config.colorScheme.palette.base0E}',
+      base0F = '#${config.colorScheme.palette.base0F}',
+    })
+
+    vim.cmd [[set conceallevel=2]]
+    vim.cmd [[set concealcursor=nc]]
+    vim.cmd [[set shiftwidth=4]]
+    vim.cmd [[set clipboard=unnamedplus]]
+    vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+
+    local colors = {
+      blue   = '#${config.colorScheme.palette.base0D}',
+      cyan   = '#${config.colorScheme.palette.base0C}',
+      black  = '#${config.colorScheme.palette.base00}',
+      white  = '#${config.colorScheme.palette.base07}',
+      red    = '#${config.colorScheme.palette.base08}',
+      violet = '#${config.colorScheme.palette.base0E}',
+      grey   = '#${config.colorScheme.palette.base00}',
+    }
+
+    local bubbles_theme = {
+      normal = {
+	a = { fg = colors.black, bg = colors.violet },
+	b = { fg = colors.white, bg = colors.grey },
+	c = { fg = colors.white },
+      },
+
+      insert = { a = { fg = colors.black, bg = colors.blue } },
+      visual = { a = { fg = colors.black, bg = colors.cyan } },
+      replace = { a = { fg = colors.black, bg = colors.red } },
+
+      inactive = {
+	a = { fg = colors.white, bg = colors.black },
+	b = { fg = colors.white, bg = colors.black },
+	c = { fg = colors.white },
+      },
+    }
+
+    require('lualine').setup {
+      options = {
+	theme = bubbles_theme,
+	component_separators = "",
+	section_separators = { left = '', right = '' },
+      },
+      sections = {
+	lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
+	lualine_b = { 'filename', 'branch' },
+	lualine_c = {
+	  '%=', --[[ add your center compoentnts here in place of this comment ]]
+	},
+	lualine_x = {},
+	lualine_y = { 'filetype', 'progress' },
+	lualine_z = {
+	  { 'location', separator = { right = '' }, left_padding = 2 },
+	},
+      },
+      inactive_sections = {
+	lualine_a = { 'filename' },
+	lualine_b = {},
+	lualine_c = {},
+	lualine_x = {},
+	lualine_y = {},
+	lualine_z = { 'location' },
+      },
+      tabline = {},
+      extensions = {},
+    }
+
+    require("noice").setup({
+      lsp = {
+	-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+	override = {
+	  ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+	  ["vim.lsp.util.stylize_markdown"] = true,
+	  ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+	},
+      },
+      -- you can enable a preset for easier configuration
+      presets = {
+	bottom_search = true, -- use a classic bottom cmdline for search
+	command_palette = true, -- position the cmdline and popupmenu together
+	long_message_to_split = true, -- long messages will be sent to a split
+	inc_rename = false, -- enables an input dialog for inc-rename.nvim
+	lsp_doc_border = false, -- add a border to hover docs and signature help
+      },
+      views = {
+	cmdline_popup={
+	  border = {
+	    style='none',
+	  },
+	},
+      },
+    })
+
+    require("typst-preview").setup({
+      dependencies_bin = {
+	['tinymist'] = 'tinymist',
+	['websocat'] = 'websocat',
+      }
+    })
+
+    require('tiny-inline-diagnostic').setup({
+	preset = "simple",
+	options = {
+	    multiple_diag_under_cursor = true,
+	    multilines = true,
+	    show_all_diags_on_cursorline = true,
+	},
+    })
+
+    vim.diagnostic.config {
+      virtual_text = false,
+    }
+
+    require('Comment').setup()
+
+    require('nvim-surround').setup()
+
+    require('telescope').setup()
+
+    require('telescope').load_extension "file_browser"
+
+    vim.keymap.set('n', '<space>f', '<Cmd>Telescope file_browser<CR>')
+
+    local TelescopeColor = {
+	    TelescopeMatching = { fg = '#${config.colorScheme.palette.base08}' },
+	    TelescopeSelection = { fg = '#${config.colorScheme.palette.base07}', bg = '#${config.colorScheme.palette.base00}', bold = true },
+
+	    TelescopePromptPrefix = { bg = '#${config.colorScheme.palette.base00}' },
+	    TelescopePromptNormal = { bg = '#${config.colorScheme.palette.base00}' },
+	    TelescopeResultsNormal = { bg = '#${config.colorScheme.palette.base00}' },
+	    TelescopePreviewNormal = { bg = '#${config.colorScheme.palette.base00}' },
+	    TelescopePromptBorder = { bg = '#${config.colorScheme.palette.base00}', fg = '#${config.colorScheme.palette.base00}'},
+	    TelescopeResultsBorder = { bg = '#${config.colorScheme.palette.base00}', fg = '#${config.colorScheme.palette.base00}' },
+	    TelescopePreviewBorder = { bg = '#${config.colorScheme.palette.base00}', fg = '#${config.colorScheme.palette.base00}' },
+	    TelescopePromptTitle = { bg = '#${config.colorScheme.palette.base00}', fg = '#${config.colorScheme.palette.base00}' },
+    }
+
+    for hl, col in pairs(TelescopeColor) do
+	    vim.api.nvim_set_hl(0, hl, col)
+    end
+
     '';
+
+    extraPackages = with pkgs; [
+	tinymist
+	websocat
+    ];
   };
 
   # Fish  
@@ -1408,12 +1379,12 @@ in
     plugins = [
       {
         name = "hydro";
-        src = pkgs.fetchFromGitHub {
-          owner = "jorgebucaran";
-          repo = "hydro";
-          rev = "d4c107a2c99d1066950a09f605bffea61fc0efab";
-          sha256 = "1ajh6klw1rkn2mqk4rdghflxlk6ykc3wxgwp2pzfnjd58ba161ki";
-        };
+        src = pkgs.fishPlugins.hydro;      
+      }
+
+      {
+	name = "fzf";
+	src = pkgs.fishPlugins.fzf-fish;
       }
     ];
   };

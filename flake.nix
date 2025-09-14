@@ -22,6 +22,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
     # Home manager
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -31,6 +33,8 @@
     nix-colors.url = "github:misterio77/nix-colors";
 
     musnix.url = "github:musnix/musnix";
+
+    ftlman.url = "github:afishhh/ftlman";
   };
 
   outputs =

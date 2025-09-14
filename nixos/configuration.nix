@@ -17,7 +17,7 @@ in
     # inputs.hardware.nixosModules.common-cpu-amd
     # inputs.hardware.nixosModules.common-ssd
     inputs.musnix.nixosModules.musnix
-    inputs.lix-module.nixosModules.default
+    # inputs.lix-module.nixosModules.default
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
 
@@ -49,11 +49,11 @@ in
   nix = {
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    #registry = lib.mapAttrs (_: value: { flake = hyprland.org/value; }) inputs;
 
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+    #nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
     # Enable the good shit
     settings = {
@@ -103,11 +103,152 @@ in
 
   # Internationalization stuff (#) <--- maybe it is sitelen pona ma?
   time.timeZone = "America/Los_Angeles";
-  i18n.defaultLocale = "en_US.utf8";
-  console.keyMap = "colemak";
+  #i18n.defaultLocale = "en_US.utf8";
+  #i18n.supportedLocales = [
+  #  "en_US.UTF-8/UTF-8"
+  #  "de_DE.UTF-8/UTF-8"
+  #];
 
+  services.kanata = {
+    enable = true;
+  
+    keyboards = {
+      kanata = {
+       devices = [ "/dev/input/event0" ];
+       extraDefCfg = "process-unmapped-keys yes";
+  
+  	config = ''
+	(defsrc
+	    grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+	    tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+	    caps a    s    d    f    g    h    j    k    l    ;    '    ret
+	    lsft z    x    c    v    b    n    m    ,    .    /    rsft
+	    lctl lmet lalt           spc            ralt rctrl
+  	)
+
+	(defalias mgc
+	    (switch
+		((key-history l 1)) t break
+		((and (key-history o 2) (key-history u 1))) r break ;; preserve our 3-roll
+		((key-history u 1)) i break
+		((key-history t 1)) l break
+		((key-history o 1)) a break
+		((key-history p 1)) h break
+		((key-history e 1)) e break
+		() rpt break
+	    )
+	)
+
+	(defalias qu
+	    (switch
+		((key-history w 1)) q break
+		() (fork 
+		    (tap-dance 200 (
+			(fork (macro q u) (macro S-q (unshift u)) (lsft rsft)) 
+			q
+		    ))
+		    q
+		    (lctl lmet lalt ralt rctl)
+		)  break
+	    )
+	)
+
+  	(deflayer default
+	    grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+	    tab  j    o    u    @mgc @qu  f    d    l    b    g    [    ]    \
+	    bspc e    a    i    n    x    y    h    t    s    c    '    ret
+	    lsft /    .    ,    z    ;    k    p    m    v    w    rsft
+	    lctl lmet lalt           spc            r    rctrl 
+  	)
+	'';
+
+	# # # # (defzippy-experimental
+	# # # #     ${builtins.toFile "zippy" ''
+	# # # # 	th	the
+	# # # # 	 a	a
+	# # # # 	 an	an
+	# # # #
+	# # # 	an	and
+	# # # 	as	as
+	# # # 	or	or
+	# # # 	bu	but
+	# # # 	 i	if
+	# # # 	so	so
+	# # # 	tn	then
+	# # # 	bc	because
+	# # #
+	# # 	to	to
+	# # 	of	of
+	# # 	in	in
+	# # 	 r	for
+	# # 	 w	with
+	# # 	on	on
+	# # 	at	at
+	# # 	rm	from
+	# # 	by	by
+	# # 	ab	about
+	# # 	up	up
+	# # 	io	into
+	# # 	ov	over
+	# # 	ar	after
+	# # 	wo	without
+	# # 	 i	I
+	# # 	me	me
+	# # 	 m	my
+	# # 	ou	you
+	# # 	ur	your
+	# # 	he	he
+	# # 	hi	him
+	# # 	his	his
+	# # 	sh	she
+	# # 	hr	her
+	# # 	it	it
+	# # 	ts	its
+	# # 	we	we
+	# # 	us	us
+	# # 	our	our
+	# # 	ty	they
+	# # 	tr	their
+	# # 	hm	them
+	# #     }
+	# #
+	#     smart-space full
+	#     smart-space-punctuation (? ! . , ; :)
+	#     output-character-mappings (
+	# 	;; This should work for US international.
+	# 	! S-1
+	# 	? S-/
+	# 	% S-5
+	# 	"(" S-9
+	# 	")" S-0
+	# 	: S-;
+	# 	< S-,
+	# 	> S-.
+	# 	r#"""# S-'
+	# 	| S-\
+	# 	_ S--
+	# 	® AG-r
+	# 	’ (no-erase `)
+	# 	é (single-output ' e)
+	#     )
+	# )
+       };
+     };
+   };
+    
+  
+  services.flatpak.enable = true;
+	#
   # Printing stuff [#] <--- idk like a document or some shit
   services.printing.enable = true;
+
+  services.printing = {
+    listenAddresses = [ "*:631" ];
+    allowFrom = [ "all" ];
+    browsing = true;
+    defaultShared = true;
+    openFirewall = true;
+  };
 
   # Sound 0^0 <--- its like a headphones or maybe an owl face
   hardware.pulseaudio.enable = false;
@@ -122,6 +263,12 @@ in
   };
   musnix.enable = true;
 
+  # Docker
+  virtualisation.docker = {
+    enable = true;
+    storageDriver = "btrfs";
+  };
+
   # Enable opengl
   hardware.opengl.enable = true;
 
@@ -131,6 +278,10 @@ in
   # Enable at-spi2-core
   services.gnome.at-spi2-core.enable = true;
   programs.dconf.enable = true;
+  
+  #steam fix?
+  programs.steam.gamescopeSession.enable = true;
+
 
   # Networking :/
   networking.hostName = "nixos";
@@ -147,9 +298,12 @@ in
       addresses = true;
       workstation = true;
     };
+    openFirewall = true;
   };
 
   services.tailscale.enable = true;
+
+  services.resolved.enable = true;
 
   # Bootloader and kernel :0
   boot = {
@@ -270,6 +424,7 @@ in
         "audio"
         "input"
         "dialout"
+	"docker"
       ];
       shell = pkgs.fish;
     };
@@ -308,4 +463,21 @@ in
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.05";
+
+  # Fonts
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    inter
+    scientifica
+    cozette
+    newcomputermodern
+    linja-sike
+  ];
 }
