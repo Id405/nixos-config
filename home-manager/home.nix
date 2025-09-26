@@ -179,7 +179,6 @@ in
     easyeffects
     gamescope
     protontricks
-    nm-applet
 
     # Audio Production
     reaper
@@ -417,7 +416,6 @@ in
   # rofi
   programs.rofi = {
     enable = true;
-    package = pkgs.rofi-wayland;
     theme =
       let
         inherit (config.lib.formats.rasi) mkLiteral;
@@ -470,8 +468,6 @@ in
 
   # mako
   services.mako.enable = true;
-
-  services.syncthing.enable = true;
 
   # Fonts
   fonts.fontconfig.enable = true;
@@ -1397,6 +1393,13 @@ in
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
+
+  services.syncthing = {
+    enable = true;
+    overrideFolders = false;
+    overrideDevices = false;
+    guiAddress = "127.0.0.1:8384";
+  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.05";
