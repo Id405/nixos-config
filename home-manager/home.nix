@@ -666,6 +666,7 @@ in
       "ui_selected_background_color" = "#${config.colorScheme.palette.base0D}";
       "ui_selected_text_color" = "#${config.colorScheme.palette.base00}";
       "custom_background_color" = "#${config.colorScheme.palette.base00}";
+      "custom_color_mode_empty_background_color" = "#${config.colorScheme.palette.base00}";
       "custom_text_color" = "#${config.colorScheme.palette.base07}";
       "startup_commands" = "toggle_custom_color;toggle_statusbar;toggle_presentation_mode";
     };
