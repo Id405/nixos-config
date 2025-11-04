@@ -522,6 +522,9 @@ in
 	font-size = fontSize;
 	font-family = programmingFont;
 	theme = "nixos";
+	mouse-scroll-multiplier = 0.1;
+	window-padding-x = 2;
+	window-padding-y = 2;
     };
     themes = {
 	nixos = {
