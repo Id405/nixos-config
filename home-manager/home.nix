@@ -252,7 +252,8 @@ in
 	      }
 
               # wallpaper
-              exec-once=bash -c "awww init && sleep 0.1 && awww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
+	      exec-once=awww-daemon
+              exec-once=bash -c "awww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
                 nixWallpaperFromSchemeDetailed {
                   scheme = config.colorscheme;
                   width = 2256;
