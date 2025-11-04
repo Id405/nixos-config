@@ -525,6 +525,7 @@ in
 	mouse-scroll-multiplier = 0.1;
 	window-padding-x = 2;
 	window-padding-y = 2;
+	window-padding-balance = true;
     };
     themes = {
 	nixos = {
