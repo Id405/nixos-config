@@ -35,7 +35,7 @@ let
   fontSizeSmall = 9;
   uiFont = "Inter";
   programmingFont = "FiraCode Nerd Font";
-  terminalEmulator = "kitty";
+  terminalEmulator = "ghostty";
 in
 {
   imports = [
@@ -301,7 +301,7 @@ in
               misc {
                 disable_hyprland_logo = true
                 enable_swallow = true
-                swallow_regex = '^(kitty)$'
+                swallow_regex = '^(ghostty)$'
               }
 
               decoration {
@@ -371,7 +371,7 @@ in
 	   "title<.*youtube.*>" = "";
 	   "class<firefox>" = "";
 	   "class<firefox> title<.*github.*>" = ""; 
-	   "kitty" = ""; 
+	   "ghostty" = ""; 
 	   "code" = "󰨞";
 	   "vesktop" = "󰙯";
 	   "steam" = "";
@@ -512,6 +512,49 @@ in
       color20 = "#${config.colorScheme.palette.base04}";
       color21 = "#${config.colorScheme.palette.base06}";
       linux_display_server = "wayland";
+    };
+  };
+
+  programs.ghostty = {
+    enable = true;
+    enableFishIntegration = true;
+    settings = {
+	font-size = fontSize;
+	font-family = programmingFont;
+	theme = "nixos";
+    };
+    themes = {
+	nixos = {
+	    foreground = "#${config.colorScheme.palette.base05}";
+	    background = "#${config.colorScheme.palette.base00}";
+	    cursor-color = "#${config.colorScheme.palette.base07}";
+	    selection-background = "#${config.colorScheme.palette.base08}";
+	    selection-foreground = "#${config.colorScheme.palette.base00}";
+	    palette = [
+	      "0=#${config.colorScheme.palette.base00}"
+	      "1=#${config.colorScheme.palette.base08}"
+	      "2=#${config.colorScheme.palette.base0B}"
+	      "3=#${config.colorScheme.palette.base0A}"
+	      "4=#${config.colorScheme.palette.base0D}"
+	      "5=#${config.colorScheme.palette.base0E}"
+	      "6=#${config.colorScheme.palette.base0C}"
+	      "7=#${config.colorScheme.palette.base05}"
+	      "8=#${config.colorScheme.palette.base03}"
+	      "9=#${config.colorScheme.palette.base08}"
+	      "10=#${config.colorScheme.palette.base0B}"
+	      "11=#${config.colorScheme.palette.base0A}"
+	      "12=#${config.colorScheme.palette.base0D}"
+	      "13=#${config.colorScheme.palette.base0E}"
+	      "14=#${config.colorScheme.palette.base0C}"
+	      "15=#${config.colorScheme.palette.base07}"
+	      "16=#${config.colorScheme.palette.base09}"
+	      "17=#${config.colorScheme.palette.base0F}"
+	      "18=#${config.colorScheme.palette.base01}"
+	      "19=#${config.colorScheme.palette.base02}"
+	      "20=#${config.colorScheme.palette.base04}"
+	      "21=#${config.colorScheme.palette.base06}"
+	    ];
+	};
     };
   };
 
