@@ -526,7 +526,7 @@ in
 	window-padding-x = 6;
 	window-padding-y = 6;
 	window-padding-balance = true;
-	adjust-cursor-thickness = 3;
+	adjust-cursor-thickness = 6;
     };
     themes = {
 	nixos = {
