@@ -35,6 +35,8 @@
     musnix.url = "github:musnix/musnix";
 
     ftlman.url = "github:afishhh/ftlman";
+
+    awww.url = "git+https://codeberg.org/LGFae/awww";
   };
 
   outputs =

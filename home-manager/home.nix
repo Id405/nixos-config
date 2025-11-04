@@ -150,7 +150,7 @@ in
     slurp
     grim
     sway-contrib.grimshot
-    swww
+    inputs.awww.packages.${system}.awww 
     texlive.combined.scheme-full
     blueberry
     gimp
@@ -252,7 +252,7 @@ in
 	      }
 
               # wallpaper
-              exec-once=bash -c "swww init && sleep 0.1 && swww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
+              exec-once=bash -c "awww init && sleep 0.1 && awww img --transition-type wipe --transition-angle 170 --transition-duration 3 ${
                 nixWallpaperFromSchemeDetailed {
                   scheme = config.colorscheme;
                   width = 2256;
@@ -261,7 +261,7 @@ in
                   fontName = uiFont;
                   versionText = inputs.nixpkgs.lib.version;
                 }
-              } && sleep 10 && swww img --transition-type wipe --transition-angle 30 ${
+              } && sleep 10 && awww img --transition-type wipe --transition-angle 30 ${
                 nixWallpaperFromScheme {
                   scheme = config.colorscheme;
                   width = 2256;
