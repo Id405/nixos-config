@@ -397,8 +397,8 @@ in
         font-size: ${toString fontSizeSmall}pt;
         background-color: #${config.colorScheme.palette.base00};
         color: #fff;
-        padding-left: 5px;
-        padding-right: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
       }
 
       #workspaces button.active {
@@ -523,8 +523,8 @@ in
 	font-family = programmingFont;
 	theme = "nixos";
 	mouse-scroll-multiplier = 0.1;
-	window-padding-x = 2;
-	window-padding-y = 2;
+	window-padding-x = 6;
+	window-padding-y = 6;
 	window-padding-balance = true;
     };
     themes = {
