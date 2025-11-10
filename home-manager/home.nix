@@ -2,6 +2,7 @@
   inputs,
   config,
   pkgs,
+  lib,
   ...
 }:
 let
@@ -105,7 +106,8 @@ in
     wl-clipboard
     polkit_gnome
     leptosfmt
-    python312Packages.python-lsp-server
+    sageWithDoc
+    jupyter-all
 
     # cli
     unzip
@@ -126,13 +128,14 @@ in
     dart-sass
     exiv2
     black
-    (pkgs.python3.withPackages (python-pkgs: [
-      python-pkgs.numpy
-      python-pkgs.transformers
-      python-pkgs.torch
-      python-pkgs.accelerate
-      python-pkgs.pyaudio
-    ]))
+    #(pkgs.python3.withPackages (python-pkgs: [
+    #  python-pkgs.numpy
+    #  python-pkgs.transformers
+    #  python-pkgs.torch
+    #  python-pkgs.accelerate
+    #  python-pkgs.pyaudio
+    #  python-pkgs.python-lsp-server
+    #]))
     pylint
     rclone
     typst
@@ -1163,6 +1166,7 @@ in
       typst-preview-nvim
       tiny-inline-diagnostic-nvim
       comment-nvim
+      image-nvim
     ];
 
     extraLuaConfig = ''
@@ -1402,12 +1406,96 @@ in
 	    vim.api.nvim_set_hl(0, hl, col)
     end
 
+    require("image").setup({
+      backend = "kitty", -- or "ueberzug" or "sixel"
+      processor = "magick_cli", -- or "magick_rock"
+      integrations = {
+	markdown = {
+	  enabled = true,
+	  clear_in_insert_mode = false,
+	  download_remote_images = true,
+	  only_render_image_at_cursor = false,
+	  only_render_image_at_cursor_mode = "popup", -- or "inline"
+	  floating_windows = false, -- if true, images will be rendered in floating markdown windows
+	  filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+	},
+	neorg = {
+	  enabled = true,
+	  filetypes = { "norg" },
+	},
+	typst = {
+	  enabled = true,
+	  filetypes = { "typst" },
+	},
+	html = {
+	  enabled = false,
+	},
+	css = {
+	  enabled = false,
+	},
+      },
+      max_width = 200,
+      max_height = 200,
+      max_width_window_percentage = math.huge,
+      max_height_window_percentage = math.huge,
+      scale_factor = 1.0,
+      window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
+      window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "snacks_notif", "scrollview", "scrollview_sign", "" },
+      editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
+      tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
+      hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
+    })
+    
+
+    vim.g.molten_image_provider = "image.nvim"
+    vim.g.molten_auto_init_behavior = "init"
+
+    vim.keymap.set("n", "<localleader>mi", ":MoltenInit<CR>",
+	{ silent = true, desc = "Initialize the plugin" })
+    vim.keymap.set("n", "<localleader>e", ":MoltenEvaluateOperator<CR>",
+	{ silent = true, desc = "run operator selection" })
+    vim.keymap.set("n", "<localleader>rl", ":MoltenEvaluateLine<CR>",
+	{ silent = true, desc = "evaluate line" })
+    vim.keymap.set("n", "<localleader>rr", ":MoltenReevaluateCell<CR>",
+	{ silent = true, desc = "re-evaluate cell" })
+    vim.keymap.set("v", "<localleader>r", ":<C-u>MoltenEvaluateVisual<CR>gv",
+	{ silent = true, desc = "evaluate visual selection" })
+
+
     '';
 
     extraPackages = with pkgs; [
 	tinymist
 	websocat
+	imagemagick
+	luajitPackages.magick
     ];
+    extraLuaPackages = ps: with ps; [
+	magick
+    ];
+    extraPython3Packages = ps: with ps; [
+	pynvim
+	jupyter-client
+	cairosvg
+	pnglatex
+	plotly
+	pyperclip
+    ];
+  };
+
+  systemd.user.services.jupyter = {
+    Unit = {
+      Description = "Jupyter Lab Development Environment";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+    Service = {
+      type = "Simple";
+      ExecStart = "${pkgs.jupyter-all}/bin/jupyter-lab";
+      Restart = "always";
+      RestartSec = 3;
+    };
   };
 
   # Fish  

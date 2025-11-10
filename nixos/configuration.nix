@@ -59,6 +59,7 @@ in
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
+      trusted-users = ["lily" "root" "@wheel"];
     };
 
     gc = {
@@ -270,14 +271,14 @@ in
   };
 
   # Enable opengl
-  nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
-  };
-  hardware.opengl = { # hardware.graphics since NixOS 24.11
+  #nixpkgs.config.packageOverrides = pkgs: {
+  #  intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
+  #};
+  hardware.graphics = { # hardware.graphics since NixOS 24.11
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+  #    intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
       libvdpau-va-gl
     ];
   };
