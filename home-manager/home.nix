@@ -1420,7 +1420,7 @@ in
       hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
     })
     
-
+    require("molten").setup({})
     vim.g.molten_image_provider = "image.nvim"
 
     vim.keymap.set("n", "<space>mi", ":MoltenInit<CR>",
