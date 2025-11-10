@@ -1422,17 +1422,16 @@ in
     
 
     vim.g.molten_image_provider = "image.nvim"
-    vim.g.molten_auto_init_behavior = "init"
 
-    vim.keymap.set("n", "<localleader>mi", ":MoltenInit<CR>",
+    vim.keymap.set("n", "<space>mi", ":MoltenInit<CR>",
 	{ silent = true, desc = "Initialize the plugin" })
-    vim.keymap.set("n", "<localleader>e", ":MoltenEvaluateOperator<CR>",
+    vim.keymap.set("n", "<space>e", ":MoltenEvaluateOperator<CR>",
 	{ silent = true, desc = "run operator selection" })
-    vim.keymap.set("n", "<localleader>rl", ":MoltenEvaluateLine<CR>",
+    vim.keymap.set("n", "<space>rl", ":MoltenEvaluateLine<CR>",
 	{ silent = true, desc = "evaluate line" })
-    vim.keymap.set("n", "<localleader>rr", ":MoltenReevaluateCell<CR>",
+    vim.keymap.set("n", "<space>rr", ":MoltenReevaluateCell<CR>",
 	{ silent = true, desc = "re-evaluate cell" })
-    vim.keymap.set("v", "<localleader>r", ":<C-u>MoltenEvaluateVisual<CR>gv",
+    vim.keymap.set("v", "<space>r", ":<C-u>MoltenEvaluateVisual<CR>gv",
 	{ silent = true, desc = "evaluate visual selection" })
 
 
