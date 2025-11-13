@@ -147,7 +147,6 @@ in
 
     # gui
     pavucontrol
-    spotify
     nemo
     slurp
     grim
