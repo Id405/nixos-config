@@ -159,7 +159,7 @@ in
     mpv
     feh
     prismlauncher
-    # darktable
+    darktable
     art
     rawtherapee
     # mathematica
