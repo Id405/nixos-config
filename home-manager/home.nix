@@ -160,6 +160,8 @@ in
     feh
     prismlauncher
     # darktable
+    art
+    rawtherapee
     # mathematica
     scrcpy
     wineWowPackages.waylandFull
