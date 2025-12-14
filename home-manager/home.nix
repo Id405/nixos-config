@@ -144,6 +144,7 @@ in
     smassh
     flatpak
     python3Packages.virtualenv
+    gdu
 
     # gui
     pavucontrol
@@ -152,7 +153,6 @@ in
     grim
     sway-contrib.grimshot
     inputs.awww.packages.${system}.awww 
-    texlive.combined.scheme-full
     blueberry
     gimp
     obsidian
@@ -169,12 +169,10 @@ in
     vesktop
     # cura
     ugs
-    fontforge-gtk
     inkscape
     system-config-printer
     inputs.zen-browser.packages."${system}".default
-    kicad
-    networkmanagerapplet
+    #networkmanagerapple
     slipstream
     shotcut
     vial
@@ -182,22 +180,23 @@ in
     easyeffects
     gamescope
     protontricks
+    mlv-app
 
     # Audio Production
-    reaper
-    vital
+    #reaper
+    #vital
     # helm
-    lsp-plugins
+    #lsp-plugins
     #yabridge
     #yabridgectl
-    mooSpace
-    dragonfly-reverb
-    hybridreverb2
-    aether-lv2
-    zenity
-    musescore
-    yabridgectl
-    yabridge
+    #mooSpace
+    #dragonfly-reverb
+    #hybridreverb2
+    #aether-lv2
+    #zenity
+    #musescore
+    #yabridgectl
+    #yabridge
 
     # Dependencies for unmanaged programs
     zulu
@@ -367,9 +366,8 @@ in
 
       "hyprland/workspaces" = {
         all-outputs = true;
-        format = "{name}:  {windows}";
-	format-window-seperator = " ";
-	window-rewrite-default = "";
+        format = "{name}: {windows}";
+	window-rewrite-default = "";
 	window-rewrite = {
 	   "title<.*youtube.*>" = "";
 	   "class<firefox>" = "";
@@ -391,6 +389,16 @@ in
 	max = 100;
 	orientation = "horizontal";
       }; 
+
+      "battery" = {
+	format = "{capacity}%";
+	format-charging = "󱐋 {capacity}%";
+	format-full = "";
+	states = {
+	    warning = 30;
+	    critical = 15;
+	};
+      };
     };
     style = ''
       * {
@@ -411,6 +419,14 @@ in
       #pulseaudio-slider trough, #backlight-slider trough {
 	min-height: 10px;
 	min-width: 80px;
+      }
+
+      #battery.warning {
+	color: #${config.colorScheme.palette.base0A};
+      }
+
+      #battery.critical {
+	color: #${config.colorScheme.palette.base08};
       }
 
     '';

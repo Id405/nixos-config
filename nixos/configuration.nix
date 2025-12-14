@@ -241,14 +241,21 @@ in
   services.flatpak.enable = true;
 	#
   # Printing stuff [#] <--- idk like a document or some shit
-  services.printing.enable = true;
-
   services.printing = {
+    enable = true;
     listenAddresses = [ "*:631" ];
     allowFrom = [ "all" ];
     browsing = true;
     defaultShared = true;
     openFirewall = true;
+    drivers = with pkgs; [
+	gutenprint
+	gutenprint-bin
+	cups-filters
+	cups-browsed
+	epson-escpr2
+	epson-escpr
+    ];
   };
 
   # Sound 0^0 <--- its like a headphones or maybe an owl face
