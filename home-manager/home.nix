@@ -181,6 +181,7 @@ in
     gamescope
     protontricks
     mlv-app
+    blender
 
     # Audio Production
     #reaper
