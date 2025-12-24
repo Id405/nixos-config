@@ -145,6 +145,7 @@ in
     flatpak
     python3Packages.virtualenv
     gdu
+    imagemagick
 
     # gui
     pavucontrol
