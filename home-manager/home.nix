@@ -179,7 +179,6 @@ in
     #inputs.ftlman.packages."${system}".default
     easyeffects
     gamescope
-    protontricks
     mlv-app
     blender
 
@@ -1183,7 +1182,6 @@ in
       typst-preview-nvim
       tiny-inline-diagnostic-nvim
       comment-nvim
-      image-nvim
     ];
 
     extraLuaConfig = ''
@@ -1422,36 +1420,6 @@ in
     for hl, col in pairs(TelescopeColor) do
 	    vim.api.nvim_set_hl(0, hl, col)
     end
-
-    require("image").setup({
-      backend = "kitty", -- or "ueberzug" or "sixel"
-      processor = "magick_cli", -- or "magick_rock"
-      max_width = 200,
-      max_height = 200,
-      max_width_window_percentage = math.huge,
-      max_height_window_percentage = math.huge,
-      scale_factor = 1.0,
-      window_overlap_clear_enabled = true, -- toggles images when windows are overlapped
-      window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "snacks_notif", "scrollview", "scrollview_sign", "" },
-      editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
-      tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
-      hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
-    })
-    
-    vim.g.molten_image_provider = "image.nvim"
-
-    vim.keymap.set("n", "<space>mi", ":MoltenInit<CR>",
-	{ silent = true, desc = "Initialize the plugin" })
-    vim.keymap.set("n", "<space>e", ":MoltenEvaluateOperator<CR>",
-	{ silent = true, desc = "run operator selection" })
-    vim.keymap.set("n", "<space>rl", ":MoltenEvaluateLine<CR>",
-	{ silent = true, desc = "evaluate line" })
-    vim.keymap.set("n", "<space>rr", ":MoltenReevaluateCell<CR>",
-	{ silent = true, desc = "re-evaluate cell" })
-    vim.keymap.set("v", "<space>r", ":<C-u>MoltenEvaluateVisual<CR>gv",
-	{ silent = true, desc = "evaluate visual selection" })
-
-
     '';
 
     extraPackages = with pkgs; [
