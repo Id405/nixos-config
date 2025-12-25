@@ -93,7 +93,18 @@ in
   };
 
   # Filesystem stuff [*_*]
-  fileSystems."/".options = [ "compress=zstd" ]; # zstd compression :)
+  fileSystems = {
+    "/".options = [ "compress=zstd" ];
+  };
+
+  services.beesd.filesystems = {
+    root = {
+      spec = "/";
+      hashTableSizeMB = 2048;
+      verbosity = "crit";
+      extraOptions = [ "--loadavg-target" "5.0" ];
+    };
+  };
 
   # We need git for nix-rebuild to work
   programs.git.enable = true;
