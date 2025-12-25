@@ -144,7 +144,8 @@ in
     smassh
     flatpak
     python3Packages.virtualenv
-    gdu
+    dua
+    nix-tree
     imagemagick
 
     # gui
