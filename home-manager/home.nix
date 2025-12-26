@@ -147,6 +147,7 @@ in
     dua
     nix-tree
     imagemagick
+    btrfs-progs
 
     # gui
     pavucontrol
