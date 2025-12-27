@@ -197,7 +197,7 @@ in
     #hybridreverb2
     #aether-lv2
     #zenity
-    #musescore
+    musescore
     #yabridgectl
     #yabridge
 
