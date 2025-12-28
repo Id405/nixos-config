@@ -184,6 +184,7 @@ in
     gamescope
     mlv-app
     blender
+    chromium
 
     # Audio Production
     #reaper
