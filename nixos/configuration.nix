@@ -303,6 +303,7 @@ in
   #steam fix?
   programs.steam.gamescopeSession.enable = true;
 
+  programs.nix-ld.enable = true;
 
   # Networking :/
   networking.hostName = "nixos";

@@ -106,7 +106,7 @@ in
     wl-clipboard
     polkit_gnome
     leptosfmt
-    sageWithDoc
+    #sageWithDoc
 
     # cli
     unzip
@@ -148,6 +148,7 @@ in
     nix-tree
     imagemagick
     btrfs-progs
+    uv
 
     # gui
     pavucontrol
@@ -184,7 +185,7 @@ in
     gamescope
     mlv-app
     blender
-    chromium
+    inputs.vkdt.packages.${system}.vkdt-git
 
     # Audio Production
     #reaper
@@ -1444,20 +1445,20 @@ in
     ];
   };
 
-  systemd.user.services.jupyter = {
-    Unit = {
-      Description = "Jupyter Lab Development Environment";
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
-    Service = {
-      type = "Simple";
-      ExecStart = "${pkgs.sage}/bin/sage -n jupyter";
-      Restart = "always";
-      RestartSec = 3;
-    };
-  };
+  #systemd.user.services.jupyter = {
+  #  Unit = {
+  #    Description = "Jupyter Lab Development Environment";
+  #  };
+  #  Install = {
+  #    WantedBy = [ "graphical-session.target" ];
+  #  };
+  #  Service = {
+  #    type = "Simple";
+  #    ExecStart = "${pkgs.sage}/bin/sage -n jupyter";
+  #    Restart = "always";
+  #    RestartSec = 3;
+  #  };
+  #};
 
   # Fish  
   programs.fish = {

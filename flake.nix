@@ -37,6 +37,8 @@
     ftlman.url = "github:afishhh/ftlman";
 
     awww.url = "git+https://codeberg.org/LGFae/awww";
+
+    vkdt.url = "github:hanatos/vkdt";
   };
 
   outputs =
