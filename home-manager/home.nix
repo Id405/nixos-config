@@ -186,6 +186,7 @@ in
     mlv-app
     blender
     inputs.vkdt.packages.${system}.vkdt-git
+    kicad
 
     # Audio Production
     #reaper
@@ -1169,7 +1170,7 @@ in
       nvim-cmp
       cmp-nvim-lsp
       mini-nvim
-      nvim-treesitter-textobjects
+      #nvim-treesitter-textobjects
       targets-vim
       nvim-surround
       telescope-nvim
@@ -1465,7 +1466,7 @@ in
     enable = true;
     loginShellInit = ''
       if test (tty) = "/dev/tty1"
-        exec Hyprland &> /dev/null
+        exec start-hyprland &> /dev/null
       end
     '';
     interactiveShellInit = ''
