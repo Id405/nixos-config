@@ -414,7 +414,7 @@ in
 	  monitor = "";
 	  dots_center = true;
 	  fade_on_empty = false;
-	  font_color = "rgba(${config.colorscheme.palette.base07}ff";
+	  font_color = "rgba(${config.colorscheme.palette.base07}ff)";
 	  inner_color = "rgba(0, 0, 0, 0)";
 	  outer_color = "rgba(0, 0, 0, 0)";
 	  outline_thickness = 0;
