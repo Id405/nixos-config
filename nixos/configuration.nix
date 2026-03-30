@@ -411,7 +411,6 @@ in
   };
 
   # Backlight
-  programs.light.enable = true;
   services.actkbd = {
     enable = true;
     bindings = [
@@ -457,6 +456,7 @@ in
   programs.hyprland.enable = true;
 
   security.polkit.enable = true;
+  security.pam.services.hyprlock = {};
 
   services.pcscd.enable = true;
   programs.gnupg.agent = {
@@ -464,8 +464,10 @@ in
     enableSSHSupport = true;
   };
 
+  security.pam.services.hyprlock = {};
+
   # Automatic login :DDDDD
-  services.getty.autologinUser = "lily";
+  #services.getty.autologinUser = "lily";
 
   # KDE
   # services.xserver.enable = true;
@@ -481,7 +483,7 @@ in
   # }];
 
   # No sudo password
-  security.sudo.wheelNeedsPassword = false;
+  #security.sudo.wheelNeedsPassword = false;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.05";

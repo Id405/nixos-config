@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
+  #inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
   nixWallpaperFromScheme = import ./wallpaperclean.nix { inherit pkgs; };
   nixWallpaperFromSchemeDetailed = import ./wallpaper.nix { inherit pkgs; };
   summercamp-desaturated = {
@@ -119,12 +119,11 @@ in
     gnupg
     gcc
     pre-commit
-    wasm-pack
+    #wasm-pack
     #nodePackages.npm
     #nodePackages.typescript-language-server
     nodejs
-    trunk
-    dart-sass
+    #trunk
     exiv2
     black
     #(pkgs.python3.withPackages (python-pkgs: [
@@ -138,10 +137,10 @@ in
     pylint
     rclone
     typst
-    zola
+    #zola
     docker-compose
     pandoc
-    smassh
+    #smassh
     flatpak
     python3Packages.virtualenv
     dua
@@ -151,13 +150,14 @@ in
     uv
 
     # gui
+    #zotero
     pavucontrol
     nemo
     slurp
     grim
     sway-contrib.grimshot
     inputs.awww.packages.${system}.awww 
-    blueberry
+    blueman
     gimp
     obsidian
     mpv
@@ -168,30 +168,33 @@ in
     rawtherapee
     # mathematica
     scrcpy
-    wineWowPackages.waylandFull
+    #wineWowPackages.waylandFull
     dxvk
     vesktop
     # cura
-    ugs
+    #ugs
     inkscape
     system-config-printer
-    inputs.zen-browser.packages."${system}".default
+    #inputs.zen-browser.packages."${system}".default
     #networkmanagerapple
-    slipstream
-    shotcut
-    vial
+    #slipstream
+    #shotcut
+    #vial
     #inputs.ftlman.packages."${system}".default
-    easyeffects
-    gamescope
+    #easyeffects
+    #gamescope
     mlv-app
-    blender
+    #blender
     inputs.vkdt.packages.${system}.vkdt-git
-    kicad
+    #kicad
+    #chromium
+    #nicotine-plus
+    #riseup-vpn
 
     # Audio Production
     #reaper
     #vital
-    # helm
+    #helm
     #lsp-plugins
     #yabridge
     #yabridgectl
@@ -200,14 +203,14 @@ in
     #hybridreverb2
     #aether-lv2
     #zenity
-    musescore
+    #musescore
     #yabridgectl
     #yabridge
 
     # Dependencies for unmanaged programs
-    zulu
-    openal
-    alsa-oss
+    #zulu
+    #openal
+    #alsa-oss
   ];
   
   # Color scheme
@@ -355,6 +358,59 @@ in
     '';
   };
 
+  programs.hyprlock = {
+    enable = true;
+    settings = {
+	general = {
+	hide_cursor = true;
+	ignore_empty_input = true;
+      };
+
+      animations = {
+	enabled = true;
+	fade_in = {
+	  duration = 300;
+	  bezier = "easeOutQuint";
+	};
+	fade_out = {
+	  duration = 300;
+	  bezier = "easeOutQuint";
+	};
+      };
+
+      background = [
+	{
+	  path = "${
+		nixWallpaperFromSchemeDetailed {
+                  scheme = config.colorscheme;
+                  width = 2256;
+                  height = 1504;
+                  logoScale = 5.0;
+                  fontName = uiFont;
+                  versionText = "Device is locked.";
+                }
+		}";
+	}
+      ];
+
+      input-field = [
+	{
+	  size = "200, 50";
+	  position = "0, -80";
+	  monitor = "";
+	  dots_center = true;
+	  fade_on_empty = false;
+	  font_color = "rgba(${config.colorscheme.palette.base00}ff";
+	  inner_color = "rgba00000000";
+	  outer_color = "rgba00000000";
+	  outline_thickness = 0;
+	  placeholder_text = "Password...";
+	  shadow_passes = 2;
+	}
+      ];
+    };
+  };
+
   # Waybar
   programs.waybar = {
     enable = true;
@@ -495,7 +551,7 @@ in
   services.mako = {
     enable = true;
     settings = {
-	default-timeout = 1;
+	default-timeout = 500;
 	ignore-timeout = true;
     };
   };
@@ -639,6 +695,12 @@ in
   #   '';
   # };
 
+  services.udiskie = {
+    enable = true;
+    automount = true;
+    notify = true;
+  };
+
   # Gtk
   gtk = {
     enable = true;
@@ -653,10 +715,10 @@ in
   };
 
   # Gtk theme
-  gtk.theme = {
-    name = "${config.colorScheme.slug}";
-    package = gtkThemeFromScheme { scheme = config.colorScheme; };
-  };
+  #gtk.theme = {
+  #  name = "${config.colorScheme.slug}";
+  #  package = gtkThemeFromScheme { scheme = config.colorScheme; };
+  #};
 
   xdg = {
     enable = true;
