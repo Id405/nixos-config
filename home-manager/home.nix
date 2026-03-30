@@ -401,7 +401,7 @@ in
                   height = 1504;
                   logoScale = 5.0;
                   fontName = uiFont;
-                  versionText = "Device is locked.";
+                  versionText = "enter your password";
                 }
 		}";
 	}
