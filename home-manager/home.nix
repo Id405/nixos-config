@@ -242,12 +242,16 @@ in
               bind=SUPER,Tab,cyclenext
               bind=SUPERSHIFT,t,cyclenext,prev
               bind=SUPERSHIFT,q,exit
+	      bind=SUPER,l,loginctl lock-session
 
               # Mouse bindings
               bindm=SUPER,v,movewindow
               bindm=SUPERALT,v,resizewindow
               bindm=SUPER,mouse:272,movewindow
               bindm=SUPER,mouse:273,resizewindow
+
+	      #force lock on lid close
+	      bindl=,switch:Lid Switch, exec,loginctl lock-session
 
               # status bar
               exec-once="waybar"
@@ -361,16 +365,18 @@ in
   services.hypridle = {
     enable = true;
     settings = {
-	lock_cmd = "hyprlock";
-	before_sleep_cmd = "hyprlock";
+	general = {
+	    lock_cmd = "hyprlock";
+	    before_sleep_cmd = "loginctl lock-session";
+	};
 	listener = [
 	    {
 	      timeout = 900;
-	      on-timeout = "hyprlock";
+	      on-timeout = "loginctl lock-session";
 	    }
 	  ];
+	};
     };
-  };
 
   programs.hyprlock = {
     enable = true;

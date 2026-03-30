@@ -349,6 +349,8 @@ in
     plymouth.enable = true;
   };
 
+  services.dbus.implementation = "broker";
+    
   # disable wait online for networkmanager, this saves 4 seconds on boot
   # this should be rectified to instead changing any targets which depend
   # on online for boot.
