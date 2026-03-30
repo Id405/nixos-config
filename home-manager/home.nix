@@ -401,8 +401,8 @@ in
 	  dots_center = true;
 	  fade_on_empty = false;
 	  font_color = "rgba(${config.colorscheme.palette.base00}ff";
-	  inner_color = "rgba00000000";
-	  outer_color = "rgba00000000";
+	  inner_color = "rgba(0, 0, 0, 0)";
+	  outer_color = "rgba(0, 0, 0, 0)";
 	  outline_thickness = 0;
 	  placeholder_text = "Password...";
 	  shadow_passes = 2;
