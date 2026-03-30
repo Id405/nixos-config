@@ -242,7 +242,7 @@ in
               bind=SUPER,Tab,cyclenext
               bind=SUPERSHIFT,t,cyclenext,prev
               bind=SUPERSHIFT,q,exit
-	      bind=SUPER,l,loginctl lock-session
+	      bind=SUPER,l, exec,loginctl lock-session
 
               # Mouse bindings
               bindm=SUPER,v,movewindow
