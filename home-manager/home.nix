@@ -415,10 +415,11 @@ in
 	  dots_center = true;
 	  fade_on_empty = false;
 	  font_color = "rgba(${config.colorscheme.palette.base07}ff)";
+	  font_family = uiFont;
 	  inner_color = "rgba(0, 0, 0, 0)";
 	  outer_color = "rgba(0, 0, 0, 0)";
 	  outline_thickness = 0;
-	  placeholder_text = "Password...";
+	  placeholder_text = "";
 	  shadow_passes = 2;
 	}
       ];
