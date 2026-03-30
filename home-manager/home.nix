@@ -340,21 +340,21 @@ in
               }
 
 	    # Rusty Retirement Game Overlay
-	    windowrulev2 = tag +rtr, title:(Rusty's Retirement)
-	    windowrulev2 = float, tag:rtr
+	    #windowrulev2 = tag +rtr, title:(Rusty's Retirement)
+	    #windowrulev2 = float, tag:rtr
 
 	    # Remove this if you don't want rtr to appear in all workspaces
-	    windowrulev2 = pin, tag:rtr
+	    #windowrulev2 = pin, tag:rtr
 
-	    windowrulev2 = size 100% 411, tag:rtr
+	    #windowrulev2 = size 100% 411, tag:rtr
 
 	    # Move rtr to buttom of the screen
-	    windowrulev2 = move 0 715, tag:rtr
+	    #windowrulev2 = move 0 715, tag:rtr
 
-	    windowrulev2 = noblur, tag:rtr
-	    windowrulev2 = noshadow, tag:rtr
-	    windowrulev2 = noborder, tag:rtr
-	    windowrulev2 = opacity 1 override, tag:rtr
+	    #windowrulev2 = noblur, tag:rtr
+	    #windowrulev2 = noshadow, tag:rtr
+	    #windowrulev2 = noborder, tag:rtr
+	    #windowrulev2 = opacity 1 override, tag:rtr
     '';
   };
 
@@ -712,6 +712,7 @@ in
       package = pkgs.yaru-theme;
       name = "yaru";
     };
+    colorScheme = "dark";
   };
 
   # Gtk theme
