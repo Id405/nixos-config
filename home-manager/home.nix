@@ -361,7 +361,8 @@ in
   services.hypridle = {
     enable = true;
     settings = {
-    lock_cmd = "hyprlock";
+	lock_cmd = "hyprlock";
+	before_sleep_cmd = "hyprlock";
 	listener = [
 	    {
 	      timeout = 900;
@@ -409,7 +410,7 @@ in
       input-field = [
 	{
 	  size = "200, 50";
-	  position = "0, -160";
+	  position = "0, -240";
 	  monitor = "";
 	  dots_center = true;
 	  fade_on_empty = false;
