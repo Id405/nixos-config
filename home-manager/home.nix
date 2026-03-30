@@ -358,6 +358,19 @@ in
     '';
   };
 
+  services.hypridle = {
+    enable = true;
+    settings = {
+    lock_cmd = "hyprlock";
+	listener = [
+	    {
+	      timeout = 900;
+	      on-timeout = "hyprlock";
+	    }
+	  ];
+    };
+  };
+
   programs.hyprlock = {
     enable = true;
     settings = {
@@ -396,11 +409,11 @@ in
       input-field = [
 	{
 	  size = "200, 50";
-	  position = "0, -80";
+	  position = "0, -160";
 	  monitor = "";
 	  dots_center = true;
 	  fade_on_empty = false;
-	  font_color = "rgba(${config.colorscheme.palette.base00}ff";
+	  font_color = "rgba(${config.colorscheme.palette.base07}ff";
 	  inner_color = "rgba(0, 0, 0, 0)";
 	  outer_color = "rgba(0, 0, 0, 0)";
 	  outline_thickness = 0;
