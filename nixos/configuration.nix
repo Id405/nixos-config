@@ -506,4 +506,20 @@ in
     newcomputermodern
     linja-sike
   ];
+
+  services.borgbackup.jobs.home-lily = {
+    paths = ["/home/lily"];
+    exclude = [ "'**/.cache'" ];
+    doInit = false;
+    repo = "zh6403@zh6403.rsync.net:repo";
+    encryption = {
+	mode = "repokey-blake2";
+	passCommand = "cat /etc/secrets/rsyncencryption";
+    };
+    environment = {
+	BORG_RSH = "ssh -i /etc/secrets/rsynckey";
+    };
+    compression = "auto,lzma";
+    startAt = "daily";
+  };
 }
