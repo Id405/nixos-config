@@ -522,5 +522,7 @@ in
     compression = "auto,lzma";
     startAt = "daily";
     extraArgs = ["--remote-path=borg12"];
+    persistentTimer = true;
+    inhibitsSleep = true;
   };
 }
