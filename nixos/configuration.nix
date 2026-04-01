@@ -64,7 +64,7 @@ in
 
     gc = {
       automatic = true;
-      options = "--delete-older-than 7d";
+      options = "--delete-older-than 7d --max-jobs 4 --cores 4";
     };
 
     distributedBuilds = true;
