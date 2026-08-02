@@ -302,6 +302,10 @@ in
   
   #steam fix?
   programs.steam.gamescopeSession.enable = true;
+  programs.gamescope = {
+    enable = true;
+    capSysNice = false; # Set to true if you experience stuttering (requires a password/group setup)
+  };
 
   programs.nix-ld.enable = true;
 

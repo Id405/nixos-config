@@ -109,6 +109,7 @@ in
     #sageWithDoc
 
     # cli
+    typos
     unzip
     zip
     eza
@@ -185,11 +186,13 @@ in
     #gamescope
     mlv-app
     #blender
-    inputs.vkdt.packages.${system}.vkdt-git
+    #inputs.vkdt.packages.${system}.vkdt-git
     #kicad
     #chromium
     #nicotine-plus
     #riseup-vpn
+    space-station-14-launcher
+    intiface-central
 
     # Audio Production
     #reaper
@@ -317,6 +320,7 @@ in
                 disable_hyprland_logo = true
                 enable_swallow = true
                 swallow_regex = '^(ghostty)$'
+		initial_workspace_tracking = 1 
               }
 
               decoration {
@@ -729,10 +733,10 @@ in
       name = uiFont;
       size = fontSize;
     };
-    iconTheme = {
-      package = pkgs.yaru-theme;
-      name = "yaru";
-    };
+  #  iconTheme = {
+  #    package = pkgs.yaru-theme;
+  #    name = "yaru";
+  #  };
     colorScheme = "dark";
   };
 
@@ -1239,6 +1243,10 @@ in
   #     };
     # };
   # };
+
+  programs.zed-editor = {
+    enable = true;
+  };
 
   programs.neovim = {
     enable = true;
