@@ -92,6 +92,8 @@ in
     # ];
   };
 
+  services.gvfs.enable = true;
+
   # Filesystem stuff [*_*]
   fileSystems = {
     "/".options = [ "compress=zstd" ];
