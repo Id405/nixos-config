@@ -109,6 +109,7 @@ in
     #sageWithDoc
 
     # cli
+    android-tools
     typos
     unzip
     zip
