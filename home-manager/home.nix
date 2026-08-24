@@ -153,6 +153,7 @@ in
 
     # gui
     #zotero
+    zmk-studio
     pavucontrol
     nemo
     slurp
