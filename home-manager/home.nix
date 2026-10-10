@@ -197,20 +197,18 @@ in
     intiface-central
 
     # Audio Production
-    #reaper
-    #vital
-    #helm
-    #lsp-plugins
-    #yabridge
-    #yabridgectl
-    #mooSpace
-    #dragonfly-reverb
-    #hybridreverb2
-    #aether-lv2
-    #zenity
-    #musescore
-    #yabridgectl
-    #yabridge
+    reaper
+    vital
+    helm
+    lsp-plugins
+    yabridge
+    yabridgectl
+    mooSpace
+    dragonfly-reverb
+    hybridreverb2
+    aether-lv2
+    zenity
+    musescore
 
     # Dependencies for unmanaged programs
     #zulu
@@ -760,6 +758,22 @@ in
         "application/pdf" = [ "org.ahrm.sioyek.desktop" ];
       };
     };
+   portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      # add other backends like xdg-desktop-portal-hyprland or gnome if needed
+    ];
+    config = {
+      common = {
+        default = [ "gtk" ];
+      };
+      hyprland = {
+        default = [ "hyprland" "gtk" ];
+        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+      };
+    };
+  }; 
   };
 
   # Cursor
