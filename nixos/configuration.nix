@@ -45,6 +45,11 @@ in
     };
   };
 
+  programs.ssh.extraConfig = ''
+    Host eu.nixbuild.net
+      ServerAliveInterval 60
+      IdentityFile /home/lily/.ssh/nixbuild
+  '';
   # nix wizardry <]:) <-- a little guy with a wizard hat
   nix = {
     # This will add each flake input as a registry
@@ -60,6 +65,8 @@ in
       experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
       trusted-users = ["lily" "root" "@wheel"];
+      cores = 6;
+      max-jobs = 2;
     };
 
     gc = {
@@ -69,18 +76,16 @@ in
 
     distributedBuilds = true;
     buildMachines = [
-      {
-        hostName = "builder";
-        system = "x86_64-linux";
-        maxJobs = 16;
-        speedFactor = 2;
-        supportedFeatures = [
-          "nixos-test"
-          "benchmark"
-          "big-parallel"
-          "kvm"
-        ];
-        mandatoryFeatures = [ ];
+      { hostName = "eu.nixbuild.net";
+	system = "x86_64-linux";
+	maxJobs = 100;
+	supportedFeatures = [
+	  "benchmark"
+	  "big-parallel"
+	  "ca-derivations"
+	  "kvm"
+	  "nixos-test"
+	];
       }
     ];
     # buildMachines = [
@@ -340,10 +345,6 @@ in
       efi.canTouchEfiVariables = true;
       efi.efiSysMountPoint = "/boot/efi";
       timeout = lib.mkDefault 0; # mkDefault so live cd isn't affected
-    };
-    initrd = {
-      systemd.enable = true;
-      verbose = false;
     };
     consoleLogLevel = 0;
     kernelParams = [

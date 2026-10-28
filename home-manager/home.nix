@@ -188,7 +188,7 @@ in
     #gamescope
     mlv-app
     #blender
-    #inputs.vkdt.packages.${system}.vkdt-git
+    inputs.vkdt.packages.${system}.vkdt-git
     #kicad
     #chromium
     #nicotine-plus
