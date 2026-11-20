@@ -20,6 +20,7 @@ in
     # inputs.lix-module.nixosModules.default
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
+    inputs.bootvine.nixosModules.default
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
@@ -353,8 +354,10 @@ in
       "mem_sleep_default=deep" # sleep to ram instead of s2idle
     ];
     kernelPackages = pkgs.linuxPackages_latest;
-    plymouth.enable = true;
+    #plymouth.enable = true;
   };
+
+  services.bootvine.enable = true;
 
   services.dbus.implementation = "broker";
     

@@ -39,6 +39,11 @@
     awww.url = "git+https://codeberg.org/LGFae/awww";
 
     vkdt.url = "github:hanatos/vkdt";
+
+    bootvine = {
+      url = "git+https://codeberg.org/wvhulle/bootvine";
+      inputs.nixpkgs.follows = "nixpkgs";
+    }; 
   };
 
   outputs =
