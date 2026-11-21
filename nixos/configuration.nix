@@ -291,12 +291,15 @@ in
   #nixpkgs.config.packageOverrides = pkgs: {
   #  intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
   #};
+
+hardware.enableRedistributableFirmware = true;
   hardware.graphics = { # hardware.graphics since NixOS 24.11
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver # LIBVA_DRIVER_NAME=iHD
+      vpl-gpu-rt
+      intel-compute-runtime
   #    intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      libvdpau-va-gl
     ];
   };
   environment.sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
@@ -352,6 +355,7 @@ in
       "quiet"
       "udev.log_level=3"
       "mem_sleep_default=deep" # sleep to ram instead of s2idle
+"i915.enable_guc=3"
     ];
     kernelPackages = pkgs.linuxPackages_latest;
     #plymouth.enable = true;
